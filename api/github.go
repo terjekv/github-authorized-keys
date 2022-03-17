@@ -19,10 +19,12 @@
 package api
 
 import (
+	"context"
 	"errors"
+	"strings"
 
-	log "github.com/Sirupsen/logrus"
-	"github.com/google/go-github/github"
+	"github.com/google/go-github/v30/github"
+	log "github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
 	"golang.org/x/oauth2"
 )
@@ -51,8 +53,9 @@ func newAccessToken(token string) oauth2.TokenSource {
 
 // GithubClient - client for operate with Github API
 type GithubClient struct {
-	client *github.Client
-	owner  string
+	client         *github.Client
+	owner          string
+	organizationId *int64
 }
 
 // GetTeam - return team structure based on name or id
@@ -72,7 +75,7 @@ func (c *GithubClient) GetTeam(name string, id int) (team *github.Team, err erro
 	}
 
 	for {
-		teams, response, _ := c.client.Organizations.ListTeams(c.owner, opt)
+		teams, response, _ := c.client.Teams.ListTeams(context.Background(), c.owner, opt)
 
 		if response.StatusCode != 200 {
 			err = ErrorGitHubAccessDenied
@@ -80,7 +83,7 @@ func (c *GithubClient) GetTeam(name string, id int) (team *github.Team, err erro
 		}
 
 		for _, localTeam := range teams {
-			if *localTeam.ID == id || *localTeam.Slug == name {
+			if *localTeam.ID == int64(id) || *localTeam.Slug == name {
 				team = localTeam
 				// team found
 				return
@@ -99,7 +102,7 @@ func (c *GithubClient) GetTeam(name string, id int) (team *github.Team, err erro
 }
 
 func (c *GithubClient) getUser(name string) (*github.User, error) {
-	user, response, err := c.client.Users.Get(name)
+	user, response, err := c.client.Users.Get(context.Background(), name)
 
 	if response.StatusCode != 200 {
 		return nil, ErrorGitHubAccessDenied
@@ -108,10 +111,20 @@ func (c *GithubClient) getUser(name string) (*github.User, error) {
 	return user, err
 }
 
-// IsTeamMember - check if {user} is a membmer of {team}
+// IsTeamMember - check if {user} is a member of {team}
 func (c *GithubClient) IsTeamMember(user string, team *github.Team) (bool, error) {
-	result, _, err := c.client.Organizations.IsTeamMember(*team.ID, user)
-	return result, err
+	result, _, err := c.client.Teams.GetTeamMembershipByID(
+		context.Background(), *c.organizationId, *team.ID, user,
+	)
+	if result != nil {
+		return true, err
+	}
+
+	if err != nil && strings.Contains(err.Error(), "Not Found") {
+		return false, nil
+	}
+
+	return false, err
 }
 
 // GetKeys - return array of user's {userName} public keys
@@ -130,7 +143,7 @@ func (c *GithubClient) GetKeys(userName string) (keys []*github.Key, err error) 
 	}
 
 	for {
-		items, response, localErr := c.client.Users.ListKeys(userName, opt)
+		items, response, localErr := c.client.Users.ListKeys(context.Background(), userName, opt)
 
 		logger.Debugf("Response: %v", response)
 		logger.Debugf("Response.StatusCode: %v", response.StatusCode)
@@ -169,14 +182,16 @@ func (c *GithubClient) GetTeamMembers(team *github.Team) (users []*github.User, 
 		}
 	}()
 
-	var opt = &github.OrganizationListTeamMembersOptions{
+	var opt = &github.TeamListTeamMembersOptions{
 		ListOptions: github.ListOptions{
 			PerPage: viper.GetInt("github_api_max_page_size"),
 		},
 	}
 
 	for {
-		members, resp, localErr := c.client.Organizations.ListTeamMembers(*team.ID, opt)
+		members, resp, localErr := c.client.Teams.ListTeamMembersByID(
+			context.Background(), *c.organizationId, *team.ID, opt,
+		)
 		if resp.StatusCode != 200 {
 			return nil, ErrorGitHubAccessDenied
 		}
@@ -196,8 +211,32 @@ func (c *GithubClient) GetTeamMembers(team *github.Team) (users []*github.User, 
 	return
 }
 
+func (client *GithubClient) SetOrganizationID() error {
+	if client.organizationId != nil {
+		return nil
+	}
+
+	organization, response, err := client.client.Organizations.Get(context.Background(), client.owner)
+	if response != nil && response.StatusCode != 200 {
+		return ErrorGitHubAccessDenied
+	}
+	if err != nil {
+		return err
+	}
+
+	client.organizationId = organization.ID
+
+	return err
+}
+
 // NewGithubClient - constructor of GithubClient structure
 func NewGithubClient(token, owner string) *GithubClient {
-	c := oauth2.NewClient(oauth2.NoContext, newAccessToken(token))
-	return &GithubClient{client: github.NewClient(c), owner: owner}
+	c := oauth2.NewClient(context.Background(), newAccessToken(token))
+	client := &GithubClient{client: github.NewClient(c), owner: owner}
+	err := client.SetOrganizationID()
+	if err != nil {
+		log.Info("GitHub Client initialization failed. Error: ", err)
+	}
+
+	return client
 }

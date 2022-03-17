@@ -19,8 +19,8 @@
 package main
 
 import (
-	log "github.com/Sirupsen/logrus"
-	"github.com/cloudposse/github-authorized-keys/cmd"
+	log "github.com/sirupsen/logrus"
+	"github.com/springboardretail/github-authorized-keys/cmd"
 	"github.com/spf13/viper"
 	"os"
 )

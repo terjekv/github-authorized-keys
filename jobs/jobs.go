@@ -1,10 +1,10 @@
 package jobs
 
 import (
-	log "github.com/Sirupsen/logrus"
-	"github.com/cloudposse/github-authorized-keys/api"
-	"github.com/cloudposse/github-authorized-keys/config"
-	model "github.com/cloudposse/github-authorized-keys/model/linux"
+	log "github.com/sirupsen/logrus"
+	"github.com/springboardretail/github-authorized-keys/api"
+	"github.com/springboardretail/github-authorized-keys/config"
+	model "github.com/springboardretail/github-authorized-keys/model/linux"
 	"github.com/goruha/permbits"
 	"github.com/jasonlvhit/gocron"
 	"github.com/spf13/viper"

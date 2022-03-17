@@ -39,6 +39,7 @@ EXPOSE 301
 RUN apk --update --no-cache add libc6-compat ca-certificates && \
     ln -s /lib /lib64
 
-COPY ./release/github-authorized-keys_linux_amd64 /usr/bin/github-authorized-keys
+COPY ./release/github-authorized-keys /usr/bin/github-authorized-keys
+RUN chmod +x /usr/bin/github-authorized-keys
 
 ENTRYPOINT ["github-authorized-keys"]

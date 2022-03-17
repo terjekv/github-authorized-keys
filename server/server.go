@@ -19,8 +19,8 @@
 package server
 
 import (
-	"github.com/cloudposse/github-authorized-keys/config"
-	"github.com/cloudposse/github-authorized-keys/key_storages"
+	"github.com/springboardretail/github-authorized-keys/config"
+	"github.com/springboardretail/github-authorized-keys/key_storages"
 	"github.com/gin-gonic/gin"
 	"strings"
 )

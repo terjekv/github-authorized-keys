@@ -20,7 +20,7 @@ package api
 
 import (
 	"fmt"
-	model "github.com/cloudposse/github-authorized-keys/model/linux"
+	model "github.com/springboardretail/github-authorized-keys/model/linux"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 	"os/user"

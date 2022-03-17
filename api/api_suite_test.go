@@ -20,12 +20,13 @@ package api
 
 import (
 	"fmt"
-	log "github.com/Sirupsen/logrus"
-	. "github.com/onsi/ginkgo"
-	. "github.com/onsi/gomega"
-	"github.com/spf13/viper"
 	"os"
 	"testing"
+
+	. "github.com/onsi/ginkgo"
+	. "github.com/onsi/gomega"
+	log "github.com/sirupsen/logrus"
+	"github.com/spf13/viper"
 )
 
 func TestSuite(t *testing.T) {

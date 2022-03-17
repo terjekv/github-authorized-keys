@@ -185,7 +185,6 @@ var _ = Describe("GithubClient", func() {
 				Expect(err).To(BeNil())
 
 				Expect(len(members) > 0).To(BeTrue())
-				Expect(len(members) > 1).To(BeTrue())
 			})
 		})
 	})

@@ -20,10 +20,10 @@ package cmd
 
 import (
 	"fmt"
-	log "github.com/Sirupsen/logrus"
-	"github.com/cloudposse/github-authorized-keys/config"
-	"github.com/cloudposse/github-authorized-keys/jobs"
-	"github.com/cloudposse/github-authorized-keys/server"
+	log "github.com/sirupsen/logrus"
+	"github.com/springboardretail/github-authorized-keys/config"
+	"github.com/springboardretail/github-authorized-keys/jobs"
+	"github.com/springboardretail/github-authorized-keys/server"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	"os"
