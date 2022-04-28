@@ -1,4 +1,9 @@
-FROM alpine:3.5
+FROM --platform=linux/amd64 alpine:3.15.4 as stage-x86_64
+FROM --platform=linux/arm64 alpine:3.15.4 as stage-arm64
+
+ARG TARGETARCH
+
+# FROM stage-${TARGETARCH} as final
 
 WORKDIR /
 
@@ -39,7 +44,7 @@ EXPOSE 301
 RUN apk --update --no-cache add libc6-compat ca-certificates && \
     ln -s /lib /lib64
 
-COPY ./release/github-authorized-keys /usr/bin/github-authorized-keys
+COPY ./release/github-authorized-keys.${TARGETARCH} /usr/bin/github-authorized-keys
 RUN chmod +x /usr/bin/github-authorized-keys
 
 ENTRYPOINT ["github-authorized-keys"]
