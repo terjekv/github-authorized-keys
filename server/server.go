@@ -19,10 +19,11 @@
 package server
 
 import (
-	"github.com/springboardretail/github-authorized-keys/config"
-	"github.com/springboardretail/github-authorized-keys/key_storages"
-	"github.com/gin-gonic/gin"
 	"strings"
+
+	"github.com/gin-gonic/gin"
+	"github.com/springboardretail/github-authorized-keys/config"
+	keyStorages "github.com/springboardretail/github-authorized-keys/key_storages"
 )
 
 // Run - start http server
