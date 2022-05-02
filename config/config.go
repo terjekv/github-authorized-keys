@@ -20,8 +20,9 @@ package config
 
 import (
 	"errors"
-	"github.com/go-ozzo/ozzo-validation"
 	"time"
+
+	validation "github.com/go-ozzo/ozzo-validation"
 )
 
 // Config - structure to store global configuration
@@ -47,12 +48,10 @@ type Config struct {
 }
 
 // Validate - process validation of config values
-func (c *Config) Validate() (err error) {
-	err = validation.StructRules{}.
-		Add("GithubAPIToken", validation.Required.Error("is required")).
-		Add("GithubOrganization", validation.Required.Error("is required")).
-		// performs validation
-		Validate(c)
+func (c Config) Validate() (err error) {
+	err = validation.ValidateStruct(&c,
+		validation.Field(&c.GithubAPIToken, validation.Required.Error("is required")),
+		validation.Field(&c.GithubOrganization, validation.Required.Error("is required")))
 
 	if err != nil {
 		return
@@ -60,7 +59,7 @@ func (c *Config) Validate() (err error) {
 
 	// Validate Github Team exists
 	if c.GithubTeamName == "" && c.GithubTeamID == 0 {
-		err = errors.New("Team name or Team id should be specified")
+		err = errors.New("team name or team id should be specified")
 	}
 	return
 }

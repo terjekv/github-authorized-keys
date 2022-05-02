@@ -1,11 +1,13 @@
 package keyStorages
 
 import (
-	log "github.com/sirupsen/logrus"
-	"github.com/coreos/etcd/client"
-	"golang.org/x/net/context"
 	"strings"
 	"time"
+
+	"github.com/coreos/etcd/client"
+	log "github.com/sirupsen/logrus"
+
+	"golang.org/x/net/context"
 )
 
 // ETCDCache - ETCD based key storage used as cache
