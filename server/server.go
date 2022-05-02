@@ -22,8 +22,8 @@ import (
 	"strings"
 
 	"github.com/gin-gonic/gin"
-	"github.com/springboardretail/github-authorized-keys/config"
-	keyStorages "github.com/springboardretail/github-authorized-keys/key_storages"
+	"github.com/terjekv/github-authorized-keys/config"
+	keyStorages "github.com/terjekv/github-authorized-keys/key_storages"
 )
 
 // Run - start http server

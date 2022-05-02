@@ -19,10 +19,11 @@
 package main
 
 import (
-	log "github.com/sirupsen/logrus"
-	"github.com/springboardretail/github-authorized-keys/cmd"
-	"github.com/spf13/viper"
 	"os"
+
+	log "github.com/sirupsen/logrus"
+	"github.com/spf13/viper"
+	"github.com/terjekv/github-authorized-keys/cmd"
 )
 
 func main() {
