@@ -4,7 +4,7 @@ import (
 	"errors"
 	"strings"
 
-	"github.com/springboardretail/github-authorized-keys/api"
+	"github.com/terjekv/github-authorized-keys/api"
 )
 
 // GithubKeys - github api as key storage

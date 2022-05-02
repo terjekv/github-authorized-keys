@@ -20,11 +20,12 @@ package api
 
 import (
 	"fmt"
-	model "github.com/springboardretail/github-authorized-keys/model/linux"
-	. "github.com/onsi/ginkgo"
-	. "github.com/onsi/gomega"
 	"os/user"
 	"strconv"
+
+	. "github.com/onsi/ginkgo"
+	. "github.com/onsi/gomega"
+	model "github.com/terjekv/github-authorized-keys/model/linux"
 )
 
 var _ = Describe("Linux", func() {

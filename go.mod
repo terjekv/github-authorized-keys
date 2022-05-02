@@ -7,6 +7,7 @@ require (
 	github.com/gin-gonic/gin v1.1.4
 	github.com/go-ozzo/ozzo-validation v0.0.0-20160801153107-c5ea90fdc3a2
 	github.com/google/go-github/v30 v30.1.0
+	github.com/google/go-github/v43 v43.0.0 // indirect
 	github.com/google/go-querystring v1.1.0 // indirect
 	github.com/goruha/permbits v0.0.0-20161209140407-b7b74f7b45ae
 	github.com/inconshreveable/mousetrap v1.0.0 // indirect
@@ -18,6 +19,7 @@ require (
 	github.com/sirupsen/logrus v1.4.2
 	github.com/spf13/cobra v0.0.0-20161116132053-9495bc009a56
 	github.com/spf13/viper v1.10.1
+	github.com/terjekv/github-authorized-keys v0.0.0-20171009064741-06a89c9b1176 // indirect
 	github.com/valyala/fasttemplate v0.0.0-20160315193134-3b874956e03f
 	golang.org/x/net v0.0.0-20220225172249-27dd8689420f
 	golang.org/x/oauth2 v0.0.0-20211104180415-d3ed0bb246c8

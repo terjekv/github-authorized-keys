@@ -21,10 +21,11 @@ package api
 import (
 	"errors"
 	"fmt"
-	"github.com/springboardretail/github-authorized-keys/model/linux"
-	"github.com/spf13/viper"
 	"os/exec"
 	"os/user"
+
+	"github.com/spf13/viper"
+	"github.com/terjekv/github-authorized-keys/model/linux"
 )
 
 const (

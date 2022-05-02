@@ -20,14 +20,15 @@ package cmd
 
 import (
 	"fmt"
-	log "github.com/sirupsen/logrus"
-	"github.com/springboardretail/github-authorized-keys/config"
-	"github.com/springboardretail/github-authorized-keys/jobs"
-	"github.com/springboardretail/github-authorized-keys/server"
-	"github.com/spf13/cobra"
-	"github.com/spf13/viper"
 	"os"
 	"time"
+
+	log "github.com/sirupsen/logrus"
+	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
+	"github.com/terjekv/github-authorized-keys/config"
+	"github.com/terjekv/github-authorized-keys/jobs"
+	"github.com/terjekv/github-authorized-keys/server"
 )
 
 var cfgFile string

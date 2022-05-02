@@ -1,15 +1,16 @@
 package jobs
 
 import (
-	log "github.com/sirupsen/logrus"
-	"github.com/springboardretail/github-authorized-keys/api"
-	"github.com/springboardretail/github-authorized-keys/config"
-	model "github.com/springboardretail/github-authorized-keys/model/linux"
+	"strings"
+
 	"github.com/goruha/permbits"
 	"github.com/jasonlvhit/gocron"
+	log "github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
+	"github.com/terjekv/github-authorized-keys/api"
+	"github.com/terjekv/github-authorized-keys/config"
+	model "github.com/terjekv/github-authorized-keys/model/linux"
 	"github.com/valyala/fasttemplate"
-	"strings"
 )
 
 const wrapperScriptTpl = `#!/bin/bash

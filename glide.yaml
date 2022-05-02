@@ -1,5 +1,5 @@
-package: github.com/cloudposse/github-authorized-keys
-homepage: https://github.com/cloudposse/github-authorized-keys
+package: github.com/terjekv/github-authorized-keys
+homepage: https://github.com/terjekv/github-authorized-keys
 license: ???
 owners:
 - name: Cloud Posse
@@ -26,7 +26,7 @@ import:
   version: f4485b318aadd133842532f841dc205a8e339d74
   subpackages:
   - codec
-- package: github.com/Sirupsen/logrus
+- package: github.com/sirupsen/logrus
   version: v0.11.0
 - package: github.com/valyala/fasttemplate
   version: 3b874956e03f1636d171bda64b130f9135f42cff
