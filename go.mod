@@ -1,4 +1,4 @@
-module github.com/springboardretail/github-authorized-keys
+module github.com/terjekv/github-authorized-keys
 
 go 1.16
 
@@ -19,8 +19,8 @@ require (
 	github.com/sirupsen/logrus v1.4.2
 	github.com/spf13/cobra v0.0.0-20161116132053-9495bc009a56
 	github.com/spf13/viper v1.10.1
-	github.com/terjekv/github-authorized-keys v0.0.0-20171009064741-06a89c9b1176 // indirect
-	github.com/valyala/fasttemplate v0.0.0-20160315193134-3b874956e03f
+	github.com/terjekv/github-authorized-keys v0.0.0-20220502091203-e46befb759fd
+	github.com/valyala/fasttemplate           v0.0.0-20160315193134-3b874956e03f
 	golang.org/x/net v0.0.0-20220225172249-27dd8689420f
 	golang.org/x/oauth2 v0.0.0-20211104180415-d3ed0bb246c8
 	golang.org/x/sys v0.0.0-20220310020820-b874c991c1a5 // indirect
