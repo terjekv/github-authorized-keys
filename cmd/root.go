@@ -40,13 +40,16 @@ const ETCDTTLDefault = int64(24 * 60 * 60)
 const SyncUsersIntervalDefault = int64(5 * 60)
 
 var flags = []flag{
-	{"a", "string", "github_api_token", "", "Github API token    ( environment variable GITHUB_API_TOKEN could be used instead ) (read more https://github.com/blog/1509-personal-api-tokens)"},
-	{"o", "string", "github_organization", "", "Github organization ( environment variable GITHUB_ORGANIZATION could be used instead )"},
-	{"n", "string", "github_team", "", "Github team name    ( environment variable GITHUB_TEAM could be used instead )"},
-	{"i", "int", "github_team_id", 0, "Github team id 	    ( environment variable GITHUB_TEAM_ID could be used instead )"},
+	{"a", "string", "github_api_token", "", "Github API token       ( environment variable GITHUB_API_TOKEN could be used instead ) (read more https://github.com/blog/1509-personal-api-tokens)"},
+	{"o", "string", "github_organization", "", "Github organization    ( environment variable GITHUB_ORGANIZATION could be used instead )"},
+	{"n", "string", "github_admin_team_name", "", "Github admin team name ( environment variable GITHUB_ADMIN_TEAM_NAME could be used instead )"},
+	{"N", "string", "github_user_team_name", "", "Github user team name  ( environment variable GITHUB_USER_TEAM_NAME could be used instead )"},
+	{"i", "int", "github_admin_team_id", 0, "Github admin team id   ( environment variable GITHUB_ADMIN_TEAM_ID could be used instead )"},
+	{"I", "int", "github_user_team_id", 0, "Github user team id    ( environment variable GITHUB_USER_TEAM_ID could be used instead )"},
 
-	{"g", "string", "sync_users_gid", "", "Primary group id    ( environment variable SYNC_USERS_GID could be used instead )"},
-	{"G", "strings", "sync_users_groups", []string{}, "CSV groups name     ( environment variable SYNC_USERS_GROUPS could be used instead )"},
+	{"g", "strings", "sync_users_admin_groups", []string{}, "CSV groups name     ( environment variable SYNC_ADMIN_USERS_GROUPS could be used instead )"},
+	{"G", "strings", "sync_users_users_groups", []string{}, "CSV groups name     ( environment variable SYNC_USERS_USERS_GROUPS could be used instead )"},
+
 	{"s", "string", "sync_users_shell", "/bin/bash", "User shell 	    ( environment variable SYNC_USERS_SHELL could be used instead )"},
 	{"r", "string", "sync_users_root", "/", "Root directory 	    ( environment variable SYNC_USERS_ROOT could be used instead )"},
 	{"c", "int64", "sync_users_interval", SyncUsersIntervalDefault, "Sync each x sec     ( environment variable SYNC_USERS_INTERVAL could be used instead )"},
@@ -70,9 +73,9 @@ Config:
   REQUIRED: Github API token        | flag --github-api-token    OR environment variable GITHUB_API_TOKEN
   REQUIRED: Github organization     | flag --github-organization OR environment variable GITHUB_ORGANIZATION
   REQUIRED: One of
-  		   Github team name | flag --github-team    OR environment variable GITHUB_TEAM
+  		   Github admin team name | flag --github-admin-team-name OR environment variable GITHUB_ADMIN_TEAM_NAME
   			OR
-  		   Github team id   | flag --github-team-id OR Environment variable GITHUB_TEAM_ID
+  		   Github admin team id   | flag --github-admin-team-id OR Environment variable GITHUB_ADMIN_TEAM_ID
 `,
 	RunE: func(cmd *cobra.Command, args []string) error {
 		logger := log.WithFields(log.Fields{"class": "RootCmd", "method": "RunE"})
@@ -86,18 +89,25 @@ Config:
 		cfg := config.Config{
 			GithubAPIToken:     viper.GetString("github_api_token"),
 			GithubOrganization: viper.GetString("github_organization"),
-			GithubTeamName:     viper.GetString("github_team"),
-			GithubTeamID:       viper.GetInt("github_team_id"),
+			//			GithubTeamID:       viper.GetInt("github_team_id"),
+
+			GithubAdminTeamName: viper.GetString("github_admin_team_name"),
+			GithubUserTeamName:  viper.GetString("github_user_team_name"),
+			GithubAdminTeamID:   viper.GetInt("github_admin_team_id"),
+			GithubUserTeamID:    viper.GetInt("github_user_team_id"),
 
 			EtcdEndpoints: fixStringSlice(viper.GetString("etcd_endpoint")),
 			EtcdPrefix:    viper.GetString("etcd_prefix"),
 			EtcdTTL:       etcdTTL,
 
-			UserGID:    viper.GetString("sync_users_gid"),
-			UserGroups: fixStringSlice(viper.GetString("sync_users_groups")),
-			UserShell:  viper.GetString("sync_users_shell"),
-			Root:       viper.GetString("sync_users_root"),
-			Interval:   uint64(viper.GetInt64("sync_users_interval")),
+			//			UserGID:    viper.GetString("sync_users_gid"),
+
+			UserAdminGroups: fixStringSlice(viper.GetString("sync_users_admin_groups")),
+			UserUserGroups:  fixStringSlice(viper.GetString("sync_users_users_groups")),
+
+			UserShell: viper.GetString("sync_users_shell"),
+			Root:      viper.GetString("sync_users_root"),
+			Interval:  uint64(viper.GetInt64("sync_users_interval")),
 
 			IntegrateWithSSH: viper.GetBool("integrate_ssh"),
 
@@ -106,13 +116,17 @@ Config:
 
 		logger.Infof("Config: GithubAPIToken - %v", mask(cfg.GithubAPIToken))
 		logger.Infof("Config: GithubOrganization - %v", mask(cfg.GithubOrganization))
-		logger.Infof("Config: GithubTeamName - %v", mask(cfg.GithubTeamName))
-		logger.Infof("Config: GithubTeamID - %v", mask(string(cfg.GithubTeamID)))
+		logger.Infof("Config: GithubAdminTeamName - %v", mask(cfg.GithubAdminTeamName))
+		logger.Infof("Config: GithubUserTeamName - %v", mask(cfg.GithubUserTeamName))
+		logger.Infof("Config: GithubAdminTeamID - %v", mask(string(cfg.GithubAdminTeamID)))
+		logger.Infof("Config: GithubUserTeamID - %v", mask(string(cfg.GithubUserTeamID)))
+		//		logger.Infof("Config: GithubTeamID - %v", mask(string(cfg.GithubTeamID)))
 		logger.Infof("Config: EtcdEndpoints - %v", cfg.EtcdEndpoints)
 		logger.Infof("Config: EtcdPrefix - %v", cfg.EtcdPrefix)
 		logger.Infof("Config: EtcdTTL - %v seconds", cfg.EtcdTTL)
-		logger.Infof("Config: UserGID - %v", cfg.UserGID)
-		logger.Infof("Config: UserGroups - %v", cfg.UserGroups)
+		//		logger.Infof("Config: UserGID - %v", cfg.UserGID)
+		logger.Infof("Config: UserAdminGroups - %v", cfg.UserAdminGroups)
+		logger.Infof("Config: UserUserGroups - %v", cfg.UserUserGroups)
 		logger.Infof("Config: UserShell - %v", cfg.UserShell)
 		logger.Infof("Config: Root - %v", cfg.Root)
 		logger.Infof("Config: Interval - %v seconds", cfg.Interval)

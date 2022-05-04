@@ -16,30 +16,43 @@ RELEASE_ARCH += openbsd/amd64
 
 APP := github-authorized-keys
 
+BUILD_FOR="arm64 amd64"
 
 COPYRIGHT_SOFTWARE := Github Authorized Keys
 COPYRIGHT_SOFTWARE_DESCRIPTION := Use GitHub teams to manage system user accounts and authorized_keys
 
 export DOCKER_IMAGE_NAME = cloudposse/$(APP)
 
-include $(shell curl -so .build-harness "https://raw.githubusercontent.com/cloudposse/build-harness/master/templates/Makefile.build-harness"; echo .build-harness)
-
-## Execute local deps
-deps:
-	$(SELF) go:deps go:deps-dev go:deps-build
+# include $(shell curl -so .build-harness "https://raw.githubusercontent.com/cloudposse/build-harness/master/templates/Makefile.build-harness"; echo .build-harness)
 
 ## Execute local build
 build:
-	$(SELF) go:build 
+	for arch in arm64 amd64; do GOOS=linux GOARCH=$$arch go build -o release/github-authorized-keys.$${arch}; done
+##	$(SELF) go:build 
+
+## Execute local deps
+#deps:
+#	$(SELF) go:deps go:deps-dev go:deps-build
+
+clean:
+	rm -rf release
+
+go:
+	make build
+	
+## Docker buildx
+docker:
+	docker buildx build --platform=linux/arm64,linux/amd64 .
 
 ## Execute all targets
 all:
-	 $(SELF) go:deps-dev
-	 $(SELF) go:deps-build
-	 $(SELF) go:deps 
-	 $(SELF) go:lint
-	 $(SELF) go:test 
-	 $(SELF) go:build-all
+#	 $(SELF) go:deps-dev
+#	 $(SELF) go:deps-build
+#	 $(SELF) go:deps 
+#	 $(SELF) go:lint
+#	 $(SELF) go:test 
+#	 $(SELF) go:build-all
+	make build
 
 ## Bring up docker compose environment
 compose-up:

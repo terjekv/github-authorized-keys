@@ -2,15 +2,16 @@ package keyStorages
 
 import (
 	"errors"
+
 	log "github.com/sirupsen/logrus"
 )
 
 var (
-	// ErrStorageKeyNotFound - returned when value is not fould in storage (source or fallback cache)
-	ErrStorageKeyNotFound = errors.New("Storage: Key not found")
+	// ErrStorageKeyNotFound - returned when value is not found in storage (source or fallback cache)
+	ErrStorageKeyNotFound = errors.New("storage: Key not found")
 
 	// ErrStorageConnectionFailed - returned when there was connection error to storage (source or fallback cache)
-	ErrStorageConnectionFailed = errors.New("Storage: Connection failed")
+	ErrStorageConnectionFailed = errors.New("storage: Connection failed")
 )
 
 type fallbackCache interface {
@@ -34,6 +35,7 @@ type Proxy struct {
 // Get - fetch value from key storage
 func (c *Proxy) Get(name string) (value string, err error) {
 	logger := log.WithFields(log.Fields{"class": "Proxy", "method": "Get"})
+	log.SetLevel(log.DebugLevel)
 
 	logger.Debugf("Backend lookup %v", name)
 

@@ -53,23 +53,23 @@ All arguments can be passed both as environment variables or command-line argume
 
 Available configuration options:
 
-| **Environment Variable** | **Argument**             | **Description**                                   | **Default**              |
-|--------------------------|--------------------------|---------------------------------------------------|--------------------------|
-| `GITHUB_API_TOKEN`       | `--github-api-token`     | GitHub API Token (read-only)                      |                          |
-| `GITHUB_ORGANIZATION`    | `--github-organization`  | GitHub Organization Containing Team               |                          |
-| `GITHUB_TEAM`            | `--github-team`          | GitHub Team for Membership to Grant SSH Access    |                          |
-| `GITHUB_TEAM_ID`         | `--github-team-id`       | GitHub Team ID for Membership to Grant SSH Access |                          |
-| `SYNC_USERS_GID`         | `--sync-users-gid`       | Default Group ID (aka `gid`) of users             |                          |
-| `SYNC_USERS_GROUPS`      | `--sync-users-groups`    | Default "Extra" Groups                            |                          |
-| `SYNC_USERS_SHELL`       | `--sync-users-shell`     | Default Login Shell                               | `/bin/bash`              |
-| `SYNC_USERS_ROOT`        | `--sync-users-root`      | `chroot` path for user commands                   | `/`                      |
-| `SYNC_USERS_INTERVAL`    | `--sync-users-interval`  | Interval used to update user accounts             | `300`                    |
-| `ETCD_ENDPOINT`          | `--etcd-endpoint`        | Etcd endpoint used for caching public keys        |                          |
-| `ETCD_TTL`               | `--etcd-ttl`             | Duration (in seconds) to cache public keys        | `86400`                  |
-| `ETCD_PREFIX`            | `--etcd-prefix`          | Prefix for public keys stored in etcd             | `github-authorized-keys` |
-| `LISTEN`                 | `--listen`               | Bind address used for REST API                    | `:301`                   |
-| `INTEGRATE_SSH`          | `--integrate-ssh`        | Flag to automatically configure SSH               | `false`                  |
-| `LOG_LEVEL`              | `--log-level`            | Ccontrol the logging verbosity.                   | `info`                   |
+| **Environment Variable**  | **Argument**                | **Description**                                      | **Default**              |
+|---------------------------|-----------------------------|------------------------------------------------------|--------------------------|
+| `GITHUB_API_TOKEN`        | `--github-api-token`        | GitHub API Token (read-only)                         |                          |
+| `GITHUB_ORGANIZATION`     | `--github-organization`     | GitHub Organization Containing Team                  |                          |
+| `GITHUB_ADMIN_TEAM`       | `--github-admin-team`       | GitHub Team for Membership to grant admin SSH Access |                          |
+| `GITHUB_USER_TEAM`        | `--github-user-team`        | GitHub Team for Membership to grant user SSH Access  |                          |
+| `SYNC_USERS_ADMIN_GROUPS` | `--sync-users-admin-groups` | Default groups for admins                            | `wheel`                  |
+| `SYNC_USERS_USERS_GROUPS` | `--sync-users-users-groups` | Default groups for users                             | `users`                  |
+| `SYNC_USERS_SHELL`        | `--sync-users-shell`        | Default Login Shell                                  | `/bin/bash`              |
+| `SYNC_USERS_ROOT`         | `--sync-users-root`         | `chroot` path for user commands                      | `/`                      |
+| `SYNC_USERS_INTERVAL`     | `--sync-users-interval`     | Interval used to update user accounts                | `300`                    |
+| `ETCD_ENDPOINT`           | `--etcd-endpoint`           | Etcd endpoint used for caching public keys           |                          |
+| `ETCD_TTL`                | `--etcd-ttl`                | Duration (in seconds) to cache public keys           | `86400`                  |
+| `ETCD_PREFIX`             | `--etcd-prefix`             | Prefix for public keys stored in etcd                | `github-authorized-keys` |
+| `LISTEN`                  | `--listen`                  | Bind address used for REST API                       | `:301`                   |
+| `INTEGRATE_SSH`           | `--integrate-ssh`           | Flag to automatically configure SSH                  | `false`                  |
+| `LOG_LEVEL`               | `--log-level`               | Ccontrol the logging verbosity.                      | `info`                   |
 
 ## Quick Start 
 

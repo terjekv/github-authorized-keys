@@ -9,18 +9,22 @@ import (
 
 var _ = Describe("GithubKeys as backend storage", func() {
 	var (
-		validToken    string
-		validOrg      string
-		validTeamName string
-		validTeamID   int
-		validUser     string
+		validToken         string
+		validOrg           string
+		validAdminTeamName string
+		validAdminTeamID   int
+		validUserTeamName  string
+		validUserTeamID    int
+		validUser          string
 	)
 
 	BeforeEach(func() {
 		validToken = viper.GetString("github_api_token")
 		validOrg = viper.GetString("github_organization")
-		validTeamName = viper.GetString("github_team")
-		validTeamID = viper.GetInt("github_team_id")
+		validAdminTeamName = viper.GetString("github_admin_team")
+		validAdminTeamID = viper.GetInt("github_admin_team_id")
+		validUserTeamName = viper.GetString("github_user_team")
+		validUserTeamID = viper.GetInt("github_admin_user_id")
 		validUser = viper.GetString("github_user")
 	})
 
@@ -28,7 +32,7 @@ var _ = Describe("GithubKeys as backend storage", func() {
 		var c *GithubKeys
 
 		BeforeEach(func() {
-			c = NewGithubKeys(validToken, validOrg, validTeamName, validTeamID)
+			c = NewGithubKeys(validToken, validOrg, validAdminTeamName, validAdminTeamID, validUserTeamName, validUserTeamID)
 		})
 
 		Context("backend have valid value", func() {
@@ -60,7 +64,7 @@ var _ = Describe("GithubKeys as backend storage", func() {
 
 		BeforeEach(func() {
 			httpmock.Activate()
-			c = NewGithubKeys(validToken, validOrg, validTeamName, validTeamID)
+			c = NewGithubKeys(validToken, validOrg, validAdminTeamName, validAdminTeamID, validUserTeamName, validUserTeamID)
 
 		})
 

@@ -3,6 +3,7 @@ package jobs
 import (
 	"strings"
 
+	"github.com/google/go-github/v43/github"
 	"github.com/goruha/permbits"
 	"github.com/jasonlvhit/gocron"
 	log "github.com/sirupsen/logrus"
@@ -44,15 +45,34 @@ func Run(cfg config.Config) {
 func syncUsers(cfg config.Config) {
 	logger := log.WithFields(log.Fields{"subsystem": "jobs", "job": "syncUsers"})
 
+	c := api.NewGithubClient(cfg.GithubAPIToken, cfg.GithubOrganization)
+
+	if cfg.GithubAdminTeamName != "" {
+		team, err := c.GetTeam(cfg.GithubAdminTeamName, cfg.GithubAdminTeamID)
+		if err != nil {
+			logger.Error(err)
+			return
+		}
+
+		syncTeamUsers(cfg, c, team, cfg.UserAdminGroups)
+	}
+
+	if cfg.GithubUserTeamName != "" {
+		team, err := c.GetTeam(cfg.GithubUserTeamName, cfg.GithubUserTeamID)
+		if err != nil {
+			logger.Error(err)
+			return
+		}
+
+		syncTeamUsers(cfg, c, team, cfg.UserUserGroups)
+	}
+}
+
+func syncTeamUsers(cfg config.Config, c *api.GithubClient, team *github.Team, groups []string) {
+	logger := log.WithFields(log.Fields{"subsystem": "jobs", "job": "syncTeamUsers"})
 	linux := api.NewLinux(cfg.Root)
 
-	c := api.NewGithubClient(cfg.GithubAPIToken, cfg.GithubOrganization)
-	// Load team
-	team, err := c.GetTeam(cfg.GithubTeamName, cfg.GithubTeamID)
-	if err != nil {
-		logger.Error(err)
-		return
-	}
+	log.Info("SyncTeamUsers")
 
 	// Get all GitHub team members
 	githubUsers, err := c.GetTeamMembers(team)
@@ -65,11 +85,8 @@ func syncUsers(cfg config.Config) {
 	notCreatedUsers := make([]string, 0)
 
 	for _, githubUser := range githubUsers {
-		var gid string
-		if cfg.UserGID != "" {
-			gid = cfg.UserGID
-		}
-		linuxUser := model.NewUser(*githubUser.Login, gid, cfg.UserGroups, cfg.UserShell)
+		log.Info(*githubUser.Login)
+		linuxUser := model.NewUser(*githubUser.Login, "999", groups, cfg.UserShell)
 		// Only add new users
 		if !linux.UserExists(linuxUser.Name()) {
 			// Create user and track if we failed to create their account
@@ -81,7 +98,10 @@ func syncUsers(cfg config.Config) {
 			logger.Debugf("User %v exists - skip creation", *githubUser.Login)
 		}
 	}
+
 }
+
+
 
 func sshIntegrate(cfg config.Config) {
 	logger := log.WithFields(log.Fields{"subsystem": "jobs", "job": "sshIntegrate"})

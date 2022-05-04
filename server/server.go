@@ -30,6 +30,7 @@ import (
 func Run(cfg config.Config) {
 
 	router := gin.Default()
+	router.SetTrustedProxies(nil)
 
 	router.GET("/user/:name/authorized_keys", func(c *gin.Context) {
 		name := c.Params.ByName("name")
@@ -48,7 +49,14 @@ func Run(cfg config.Config) {
 func authorize(cfg config.Config, userName string) (string, error) {
 	var keys *keyStorages.Proxy
 
-	sourceStorage := keyStorages.NewGithubKeys(cfg.GithubAPIToken, cfg.GithubOrganization, cfg.GithubTeamName, cfg.GithubTeamID)
+	sourceStorage := keyStorages.NewGithubKeys(
+		cfg.GithubAPIToken,
+		cfg.GithubOrganization,
+		cfg.GithubAdminTeamName,
+		cfg.GithubAdminTeamID,
+		cfg.GithubUserTeamName,
+		cfg.GithubUserTeamID,
+	)
 
 	if len(cfg.EtcdEndpoints) > 0 {
 		fallbackStorage, _ := keyStorages.NewEtcdCache(cfg.EtcdEndpoints, cfg.EtcdPrefix, cfg.EtcdTTL)

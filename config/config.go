@@ -29,18 +29,22 @@ import (
 type Config struct {
 	GithubAPIToken     string
 	GithubOrganization string
-	GithubTeamName     string
-	GithubTeamID       int
+
+	GithubAdminTeamName string
+	GithubAdminTeamID   int
+	GithubUserTeamName  string
+	GithubUserTeamID    int
 
 	EtcdEndpoints []string
 	EtcdTTL       time.Duration
 	EtcdPrefix    string
 
-	UserGID    string
-	UserGroups []string
-	UserShell  string
-	Root       string
-	Interval   uint64
+	UserAdminGroups []string
+	UserUserGroups  []string
+
+	UserShell string
+	Root      string
+	Interval  uint64
 
 	IntegrateWithSSH bool
 
@@ -58,8 +62,8 @@ func (c Config) Validate() (err error) {
 	}
 
 	// Validate Github Team exists
-	if c.GithubTeamName == "" && c.GithubTeamID == 0 {
-		err = errors.New("team name or team id should be specified")
+	if c.GithubAdminTeamName == "" && c.GithubUserTeamName == "" {
+		err = errors.New("either a github admin team name or a github user team name is required")
 	}
 	return
 }
