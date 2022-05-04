@@ -13,14 +13,12 @@
 
 Run the following commands:
 ```
-make go:deps
-make go:build
-make go:install
+make go
 ```
 
-After installation, the binary will be installed here:
+After building, the binaries (linux/amd64 and linux/arm64) will be installed here:
 ```
-/usr/local/sbin/github-authorized-keys
+release/github-authorized-keys.[platform]
 ```
 
 
@@ -84,8 +82,8 @@ Run tests with command
 ```
 TEST_GITHUB_API_TOKEN={api token} \
 TEST_GITHUB_ORGANIZATION={organization name} \
-TEST_GITHUB_TEAM={team name} \
-TEST_GITHUB_TEAM_ID={team id} \
+TEST_GITHUB_ADMIN_TEAM={team name} \
+TEST_GITHUB_ADMIN_TEAM_ID={team id} \
 TEST_GITHUB_USER={user} \
 TEST_ETCD_ENDPOINT={etcd endpoints comma separeted - optional} \
   make test
@@ -114,8 +112,8 @@ docker build \
   --build-arg RUN_TESTS=1 \
   --build-arg  TEST_GITHUB_API_TOKEN={token} \
   --build-arg  TEST_GITHUB_ORGANIZATION={org} \
-  --build-arg  TEST_GITHUB_TEAM={team} \
-  --build-arg  TEST_GITHUB_TEAM_ID={team_id} \
+  --build-arg  TEST_GITHUB_ADMIN_TEAM={team} \
+  --build-arg  TEST_GITHUB_ADMIN_TEAM_ID={team_id} \
   --build-arg  TEST_GITHUB_USER={user} \
   --build-arg  TEST_ETCD_ENDPOINT={etcd endpoints comma separeted - optional}
     ./

@@ -1,15 +1,15 @@
-# Github Authorized Keys [![Build Status](https://travis-ci.org/cloudposse/github-authorized-keys.svg?branch=master)](https://travis-ci.org/cloudposse/github-authorized-keys)
+# Github Authorized Keys [![Build Status](https://travis-ci.org/terjekv/github-authorized-keys.svg?branch=master)](https://travis-ci.org/terjekv/github-authorized-keys)
 
 Use GitHub teams to manage system user accounts and `authorized_keys`. 
 
 
-[![Go Report Card](https://goreportcard.com/badge/github.com/cloudposse/github-authorized-keys)](https://goreportcard.com/report/github.com/cloudposse/github-authorized-keys)
-[![Coverage Status](https://coveralls.io/repos/github/cloudposse/github-authorized-keys/badge.svg?branch=master)](https://coveralls.io/github/cloudposse/github-authorized-keys?branch=master)
-[![Docker Pulls](https://img.shields.io/docker/pulls/cloudposse/github-authorized-keys.svg)](https://hub.docker.com/r/cloudposse/github-authorized-keys)
-[![GitHub Stars](https://img.shields.io/github/stars/cloudposse/github-authorized-keys.svg)](https://github.com/cloudposse/github-authorized-keys/stargazers) 
-[![GitHub Issues](https://img.shields.io/github/issues/cloudposse/github-authorized-keys.svg)](https://github.com/cloudposse/github-authorized-keys/issues)
-[![Contributions Welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg)](https://github.com/cloudposse/github-authorized-keys/pulls)
-[![License](https://img.shields.io/badge/license-APACHE%202.0%20-brightgreen.svg)](https://github.com/cloudposse/github-authorized-keys/blob/master/LICENSE)
+[![Go Report Card](https://goreportcard.com/badge/github.com/terjekv/github-authorized-keys)](https://goreportcard.com/report/github.com/terjekv/github-authorized-keys)
+[![Coverage Status](https://coveralls.io/repos/github/terjekv/github-authorized-keys/badge.svg?branch=master)](https://coveralls.io/github/terjekv/github-authorized-keys?branch=master)
+[![Docker Pulls](https://img.shields.io/docker/pulls/terjekv/github-authorized-keys.svg)](https://hub.docker.com/r/terjekv/github-authorized-keys)
+[![GitHub Stars](https://img.shields.io/github/stars/terjekv/github-authorized-keys.svg)](https://github.com/terjekv/github-authorized-keys/stargazers) 
+[![GitHub Issues](https://img.shields.io/github/issues/terjekv/github-authorized-keys.svg)](https://github.com/terjekv/github-authorized-keys/issues)
+[![Contributions Welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg)](https://github.com/terjekv/github-authorized-keys/pulls)
+[![License](https://img.shields.io/badge/license-APACHE%202.0%20-brightgreen.svg)](https://github.com/terjekv/github-authorized-keys/blob/master/LICENSE)
 
 ----
 
@@ -39,12 +39,12 @@ This tool consists of three parts:
 
 ## Getting Started
 
-By far, the easiest way to get up and running is by using the ready-made docker container. The only dependency is [Docker](https://docs.docker.com/engine/installation) itself. We also provide a [Kubernetes Helm Chart](https://github.com/cloudposse/charts/tree/master/incubator/github-authorized-keys). If you run [CoreOS](docs/coreos.md) or use `systemd`, there's a [sample unit file](contrib/github-authorized-keys.service).
+By far, the easiest way to get up and running is by using the ready-made docker container. The only dependency is [Docker](https://docs.docker.com/engine/installation) itself. We also provide a [Kubernetes Helm Chart](https://github.com/terjekv/charts/tree/master/incubator/github-authorized-keys). If you run [CoreOS](docs/coreos.md) or use `systemd`, there's a [sample unit file](contrib/github-authorized-keys.service).
 
-Cloud Posse provides a public image [cloudposse/github-authorized-keys](https://hub.docker.com/r/cloudposse/github-authorized-keys/) that is built using [TravisCI](.travis.yml) or you can build your own from source.
+Cloud Posse provides a public image [terjekv/github-authorized-keys](https://hub.docker.com/r/terjekv/github-authorized-keys/) that is built using [TravisCI](.travis.yml) or you can build your own from source.
 
 ```
-docker build -t cloudposse/github-authorized-keys .
+docker build -t terjekv/github-authorized-keys .
 ```
 
 ### Running GitHub Authorized Keys
@@ -57,8 +57,10 @@ Available configuration options:
 |---------------------------|-----------------------------|------------------------------------------------------|--------------------------|
 | `GITHUB_API_TOKEN`        | `--github-api-token`        | GitHub API Token (read-only)                         |                          |
 | `GITHUB_ORGANIZATION`     | `--github-organization`     | GitHub Organization Containing Team                  |                          |
-| `GITHUB_ADMIN_TEAM`       | `--github-admin-team`       | GitHub Team for Membership to grant admin SSH Access |                          |
-| `GITHUB_USER_TEAM`        | `--github-user-team`        | GitHub Team for Membership to grant user SSH Access  |                          |
+| `GITHUB_ADMIN_TEAM_NAME`  | `--github-admin-team-name`  | Name of GitHub Team that grants admin SSH access     |                          |
+| `GITHUB_USER_TEAM_NAME`   | `--github-user-team-name`   | Name of GitHub Team that grants user SSH access      |                          |
+| `GITHUB_ADMIN_TEAM_NAME`  | `--github-admin-team-id`    | ID of GitHub Team that grants admin SSH access       |                          |
+| `GITHUB_USER_TEAM`        | `--github-user-team-id`     | ID of Github Team that grants user SSH access        |                          |
 | `SYNC_USERS_ADMIN_GROUPS` | `--sync-users-admin-groups` | Default groups for admins                            | `wheel`                  |
 | `SYNC_USERS_USERS_GROUPS` | `--sync-users-users-groups` | Default groups for users                             | `users`                  |
 | `SYNC_USERS_SHELL`        | `--sync-users-shell`        | Default Login Shell                                  | `/bin/bash`              |
@@ -85,7 +87,7 @@ For example, [`/etc/github-authorized-keys`](contrib/env), might look like this:
 ```
 GITHUB_API_TOKEN={token}
 GITHUB_ORGANIZATION={organization}
-GITHUB_TEAM=ssh
+GITHUB_ADMIN_TEAM_NAME=ssh
 SYNC_USERS_GID=500
 SYNC_USERS_GROUPS=sudo
 SYNC_USERS_SHELL=/bin/bash
@@ -105,7 +107,7 @@ docker run \
   --volume /:/host \
   --expose "127.0.0.1:301:301" \
   --env-file /etc/github-authorized-keys \
-     cloudposse/github-authorized-keys:latest
+     terjekv/github-authorized-keys:latest
 ```
 
 **IMPORTANT** Remember to expose the REST API so you can retrieve user's public keys. Only public keys belonging to users found in the GitHub team will be returned.
@@ -128,11 +130,11 @@ After modifying the `sshd_config`, it's necessary to restart the SSH daemon. Thi
 If you wish to manually configure your `sshd_config`, here's all you need to do:
 
 ```
-AuthorizedKeysCommand /usr/bin/authorized-keys
+AuthorizedKeysCommand /usr/local/sbin/authorized-keys
 AuthorizedKeysCommandUser root
 ```
 
-Then install a [wrapper script](contrib/authorized-keys) to `/usr/bin/authorized-keys`. 
+Then install a [wrapper script](contrib/authorized-keys) to `/usr/local/sbin/authorized-keys`. 
 
 **Note**: this command requires `curl` to access the REST API in order to fetch authorized keys
 
@@ -168,33 +170,32 @@ The values in `{braces}` are macros that will be automatically substituted at ru
 
 **Got a question?** 
 
-File a GitHub [issue](https://github.com/cloudposse/github-authorized-keys/issues), send us an [email](mailto:hello@cloudposse.com) or reach out to us on [Gitter](https://gitter.im/cloudposse/).
+File a GitHub [issue](https://github.com/terjekv/github-authorized-keys/issues). :)
 
 ## Contributing
 
 ### Bug Reports & Feature Requests
 
-Please use the [issue tracker](https://github.com/cloudposse/github-authorized-keys/issues) to report any bugs or file feature requests.
+Please use the [issue tracker](https://github.com/terjekv/github-authorized-keys/issues) to report any bugs or file feature requests.
 
 ### Developing
 
-If you are interested in being a contributor and want to get involved in developing GitHub Authorized Keys, we would love to hear from you! Shoot us an [email](mailto:hello@cloudposse.com).
+The original use case from CloudPosse has for them been replaced by Teleport (https://github.com/cloudposse/github-authorized-keys/issues/34). This repository is maintained for personal use for time being.
 
-In general, PRs are welcome. We follow the typical "fork-and-pull" Git workflow.
+In general, PRs are welcome.
 
  1. **Fork** the repo on GitHub
  2. **Clone** the project to your own machine
  3. **Commit** changes to your own branch
  4. **Push** your work back up to your fork
- 5. Submit a **Pull request** so that we can review your changes
+ 5. Submit a **Pull request** so that changes can be reviewed.
 
 **NOTE:** Be sure to merge the latest from "upstream" before making a pull request!
 
 Here's how to get started...
 
 1. `git clone https://github.com/cloudposse/github-authorized-keys.git` to pull down the repository 
-2. `make init` to initialize the [`build-harness`](https://github.com/cloudposse/build-harness/)
-3. Review the [documentation](docs/) on compiling
+2. Review the [documentation](docs/) on compiling.
 
 ## License
 
@@ -219,7 +220,7 @@ Here's how to get started...
 
 ## About
 
-GitHub Authorized Keys is maintained and funded by [Cloud Posse, LLC][website]. Like it? Please let us know at <hello@cloudposse.com>
+GitHub Authorized Keys was originally maintained and funded by [Cloud Posse, LLC][website]. Like it? Please let them know at <hello@cloudposse.com>
 
 We love [Open Source Software](https://github.com/cloudposse/)! 
 
