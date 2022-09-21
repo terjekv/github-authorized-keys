@@ -41,19 +41,19 @@ func createCmdFlags(cmd *cobra.Command, f flag) {
 	switch f.flagType {
 	case "strings":
 		cmd.Flags().StringSliceP(f.flag(), f.short, f.defaultValue.([]string), f.description)
-		break
+		//		break
 	case "int":
 		cmd.Flags().IntP(f.flag(), f.short, f.defaultValue.(int), f.description)
-		break
+		//		break
 	case "int64":
 		cmd.Flags().Int64P(f.flag(), f.short, f.defaultValue.(int64), f.description)
-		break
+		//		break
 	case "bool":
 		cmd.Flags().BoolP(f.flag(), f.short, f.defaultValue.(bool), f.description)
-		break
+		//		break
 	default:
 		cmd.Flags().StringP(f.flag(), f.short, f.defaultValue.(string), f.description)
-		break
+		//		break
 
 	}
 	viper.BindPFlag(f.option, cmd.Flags().Lookup(f.flag()))
