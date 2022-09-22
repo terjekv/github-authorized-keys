@@ -5,8 +5,6 @@ ARG TARGETARCH
 
 # FROM stage-${TARGETARCH} as final
 
-WORKDIR /
-
 # For production run most common user add flags
 #
 # We need --force-badname because github users could contains capital letters, what is not acceptable in some distributions
@@ -44,7 +42,6 @@ EXPOSE 301
 RUN apk --update --no-cache add libc6-compat ca-certificates shadow && \
     ln -s /lib /lib64
 
-WORKDIR /home/runner/work/github-authorized-keys/github-authorized-keys
 COPY ./github-authorized-keys.${TARGETARCH} /usr/bin/github-authorized-keys
 RUN chmod +x /usr/bin/github-authorized-keys
 
