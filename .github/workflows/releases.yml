@@ -26,7 +26,11 @@ jobs:
     - name: Debug build environment
       run: ls -R
 
-      
+    - uses: actions/upload-artifact@v3
+      with:
+        name: github-authorized-keys.${{ matrix.goarch }}
+        path: ./build-artifacts-*/github-authorized-keys
+
 
   # define job to build and publish docker image
   # https://event-driven.io/en/how_to_buid_and_push_docker_image_with_github_actions/
