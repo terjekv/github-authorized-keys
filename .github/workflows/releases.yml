@@ -23,8 +23,9 @@ jobs:
         goarch: ${{ matrix.goarch }}
         extra_files: README.md LICENSE
         asset_name: '${{ env.REPOSITORY_NAME }}-${{ env.RELEASE_TAG }}-${{ env.OS_NAME }}-${{ matrix.goarch }}'
-      - name: Debug build environment
-        run: ls -R
+
+    - name: Debug build environment
+      run: ls -R
 
       
 
