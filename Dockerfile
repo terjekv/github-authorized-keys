@@ -42,8 +42,9 @@ EXPOSE 301
 RUN apk --update --no-cache add libc6-compat ca-certificates shadow && \
     ln -s /lib /lib64
 
-RUN pwd
-RUN ls -R
+RUN echo $( pwd )
+RUN echo $( ls -R )
+
 COPY ./github-authorized-keys.${TARGETARCH} /usr/bin/github-authorized-keys
 RUN chmod +x /usr/bin/github-authorized-keys
 
