@@ -24,7 +24,7 @@ jobs:
         extra_files: README.md LICENSE
 
     - name: Debug build environment
-      run: ls -R
+      run: pwd; ls -R
 
     - uses: actions/upload-artifact@v3
       with:
@@ -48,7 +48,7 @@ jobs:
           path: releases
       
       - name: Debug downloads
-        run: ls -R
+        run: pwd; ls -R
 
       - name: Checkout code
         uses: actions/checkout@v3
