@@ -52,7 +52,7 @@ jobs:
         run: pwd; ls -R
 
       - name: Copy downloaded artifacts to . for Dockerfile compatibility
-        run: cp -av ./releases/artifact/* /
+        run: cp -av ./releases/artifact/* .
 
       - name: Checkout code
         uses: actions/checkout@v3
