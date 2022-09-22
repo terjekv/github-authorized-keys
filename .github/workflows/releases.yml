@@ -29,9 +29,18 @@ jobs:
     name: Build Docker image and push to repositories
     # run only when code is compiling and tests are passing
     runs-on: ubuntu-latest
+    needs: releases-matrix
 
     # steps to perform in job
     steps:
+      - name: Download artifacts
+        uses: actions/download-artifact@v3
+        with:
+          path: releases
+      
+      - name: Debug downloads
+        run: ls -R
+
       - name: Checkout code
         uses: actions/checkout@v3
 
