@@ -88,6 +88,7 @@ For example, [`/etc/github-authorized-keys`](contrib/env), might look like this:
 GITHUB_API_TOKEN={token}
 GITHUB_ORGANIZATION={organization}
 GITHUB_ADMIN_TEAM_NAME=ssh
+GITHUB_USER_TEAM_NAME=users
 SYNC_USERS_GID=500
 SYNC_USERS_GROUPS=sudo
 SYNC_USERS_SHELL=/bin/bash
