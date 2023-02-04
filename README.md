@@ -1,4 +1,4 @@
-# Github Authorized Keys [![Build Status](https://travis-ci.org/terjekv/github-authorized-keys.svg?branch=master)](https://travis-ci.org/terjekv/github-authorized-keys)
+# Github Authorized Keys [![Build Status](https://github.com/terjekv/github-authorized-keys/actions/workflows/build.yml/badge.svg)](https://github.com/terjekv/github-authorized-keys/)
 
 Use GitHub teams to manage system user accounts and `authorized_keys`. 
 
