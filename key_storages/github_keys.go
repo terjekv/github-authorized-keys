@@ -91,7 +91,7 @@ func isMemberOf(s *GithubKeys, user string, teamname string, teamid int) (isMemb
 		}
 		logger.Debugf("looks like is %v is a member of team %v!", user, teamname)
 	}
-	return isMember, nil
+	return isMember, mem_err
 }
 
 // NewGithubKeys - constructor for github key storage
