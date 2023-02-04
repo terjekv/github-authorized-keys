@@ -36,14 +36,14 @@ func (s *GithubKeys) Get(user string) (value string, err error) {
 
 	logger.Debugf("checking admin membership")
 	aisMember, _ := isMemberOf(s, user, s.Adminteam, s.AdminteamID)
-	
+
 	if !aisMember {
 		logger.Debugf("checking user membership")
 		uisMember, _ := isMemberOf(s, user, s.Adminteam, s.AdminteamID)
 		if !uisMember {
-//			uerr = ErrStorageKeyNotFound
+			//			uerr = ErrStorageKeyNotFound
 			logger.Debugf("no memberships for %v", user)
-			return 
+			return
 		}
 	}
 
@@ -91,7 +91,7 @@ func isMemberOf(s *GithubKeys, user string, teamname string, teamid int) (isMemb
 		}
 		logger.Debugf("looks like is %v is a member of team %v!", user, teamname)
 	}
-	return isMember, nil	
+	return isMember, nil
 }
 
 // NewGithubKeys - constructor for github key storage

@@ -20,8 +20,8 @@ package api
 
 import (
 	"fmt"
-	log "github.com/sirupsen/logrus"
 	"github.com/goruha/permbits"
+	log "github.com/sirupsen/logrus"
 	"io/ioutil"
 	"os"
 	"regexp"
