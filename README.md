@@ -39,9 +39,9 @@ This tool consists of three parts:
 
 ## Getting Started
 
-By far, the easiest way to get up and running is by using the ready-made docker container. The only dependency is [Docker](https://docs.docker.com/engine/installation) itself. We also provide a [Kubernetes Helm Chart](https://github.com/terjekv/charts/tree/master/incubator/github-authorized-keys). If you run [CoreOS](docs/coreos.md) or use `systemd`, there's a [sample unit file](contrib/github-authorized-keys.service).
+By far, the easiest way to get up and running is by using the ready-made docker container. The only dependency is [Docker](https://docs.docker.com/engine/installation) itself. If you wish to run [CoreOS](docs/coreos.md) or use `systemd`, there's a [sample unit file](contrib/github-authorized-keys.service).
 
-Cloud Posse provides a public image [terjekv/github-authorized-keys](https://hub.docker.com/r/terjekv/github-authorized-keys/) that is built using [TravisCI](.travis.yml) or you can build your own from source.
+A prebuilt public [docker image](https://hub.docker.com/r/terjekv/github-authorized-keys/) that is built using upon tagging a release (via [releases.yml](.github/workflows/releases.yml)) or you can build your own from source.
 
 ```
 docker build -t terjekv/github-authorized-keys .
@@ -195,7 +195,7 @@ In general, PRs are welcome.
 
 Here's how to get started...
 
-1. `git clone https://github.com/cloudposse/github-authorized-keys.git` to pull down the repository 
+1. `git clone https://github.com/terjekv/github-authorized-keys.git` to pull down the repository 
 2. Review the [documentation](docs/) on compiling.
 
 ## License

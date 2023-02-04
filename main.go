@@ -19,6 +19,7 @@
 package main
 
 import (
+	"fmt"
 	"os"
 
 	log "github.com/sirupsen/logrus"
@@ -34,7 +35,10 @@ func main() {
 // LoggerInit - Initialize logger configuration used for cli
 func LoggerInit() {
 	viper.SetDefault("log_level", "info")
-	viper.BindEnv("log_level", "LOG_LEVEL")
+	err := viper.BindEnv("log_level", "LOG_LEVEL")
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Unable to bind logger: %v", err)
+	}
 
 	// Log as JSON instead of the default ASCII formatter.
 	log.SetFormatter(&log.JSONFormatter{})
@@ -47,11 +51,9 @@ func LoggerInit() {
 	switch loglevel {
 	case "debug":
 		log.SetLevel(log.DebugLevel)
-		break
 
 	case "info":
 	default:
 		log.SetLevel(log.InfoLevel)
-		break
 	}
 }
