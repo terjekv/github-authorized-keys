@@ -4,7 +4,7 @@ Use GitHub teams to manage system user accounts and `authorized_keys`.
 
 
 [![Go Report Card](https://goreportcard.com/badge/github.com/terjekv/github-authorized-keys)](https://goreportcard.com/report/github.com/terjekv/github-authorized-keys)
-[![Coverage Status](https://coveralls.io/repos/github/terjekv/github-authorized-keys/badge.svg?branch=main)](https://coveralls.io/github/terjekv/github-authorized-keys?branch=main)
+<!-- [![Coverage Status](https://coveralls.io/repos/github/terjekv/github-authorized-keys/badge.svg?branch=main)](https://coveralls.io/github/terjekv/github-authorized-keys?branch=main) -->
 [![Docker Pulls](https://img.shields.io/docker/pulls/terjekv/github-authorized-keys.svg)](https://hub.docker.com/r/terjekv/github-authorized-keys)
 [![GitHub Stars](https://img.shields.io/github/stars/terjekv/github-authorized-keys.svg)](https://github.com/terjekv/github-authorized-keys/stargazers) 
 [![GitHub Issues](https://img.shields.io/github/issues/terjekv/github-authorized-keys.svg)](https://github.com/terjekv/github-authorized-keys/issues)
