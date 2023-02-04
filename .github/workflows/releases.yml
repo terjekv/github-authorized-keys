@@ -50,7 +50,14 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           path: releases
-      
+
+      - name: Set env
+        run: echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
+      - name: Test
+        run: |
+          echo $RELEASE_VERSION
+          echo ${{ env.RELEASE_VERSION }}
+
       - name: Debug downloads
         run: pwd; ls -R
 
@@ -84,10 +91,12 @@ jobs:
           context: .
           # Note: tags has to be all lower-case
           tags: |
+            terjekv/github-authorized-keys:${{ env.RELEASE_VERSION }}
+            ghcr.io/terjekv/github-authorized-keys:${{ env.RELEASE_VERSION }}
             terjekv/github-authorized-keys:latest 
             ghcr.io/terjekv/github-authorized-keys:latest
           # build on feature branches, push only on main branch
-          push: ${{ github.ref == 'refs/heads/main' }}
+          push: True
 
       - name: Image digest
         run: echo ${{ steps.docker_build.outputs.digest }}
