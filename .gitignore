@@ -47,3 +47,6 @@ release/
 
 # Backups
 *~
+
+# Environment
+env/
