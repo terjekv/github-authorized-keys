@@ -20,12 +20,14 @@ package api
 
 import (
 	"bytes"
-	log "github.com/sirupsen/logrus"
 	"os/exec"
 	"strings"
 
-	"github.com/valyala/fasttemplate"
+	log "github.com/sirupsen/logrus"
+
 	"syscall"
+
+	"github.com/valyala/fasttemplate"
 )
 
 // Linux - linux os with root dir

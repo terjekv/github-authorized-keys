@@ -101,8 +101,6 @@ func syncTeamUsers(cfg config.Config, c *api.GithubClient, team *github.Team, gr
 
 }
 
-
-
 func sshIntegrate(cfg config.Config) {
 	logger := log.WithFields(log.Fields{"subsystem": "jobs", "job": "sshIntegrate"})
 	linux := api.NewLinux(cfg.Root)

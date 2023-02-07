@@ -20,27 +20,36 @@ package api
 
 import (
 	"fmt"
-	log "github.com/sirupsen/logrus"
-	"github.com/goruha/permbits"
 	"io/ioutil"
 	"os"
 	"regexp"
 	"strings"
+
+	"github.com/goruha/permbits"
+	log "github.com/sirupsen/logrus"
 )
 
 type operationOnFileContent func(string) error
 
 // FileExists - check if file exists
 func (linux *Linux) FileExists(filePath string) bool {
+	logger := log.WithFields(log.Fields{"class": "Linux", "method": "FileEnsure"})
 	file, err := os.Open(linux.applyChroot(filePath))
+	if err != nil {
+		logger.Debugf("Error on open file! %v", err)
+	}
 	defer file.Close()
 	return err == nil
 }
 
 // FileCreate - creates new file
 func (linux *Linux) FileCreate(filePath string) error {
+	logger := log.WithFields(log.Fields{"class": "Linux", "method": "FileEnsure"})
 	if !linux.FileExists(filePath) {
 		file, err := os.Create(linux.applyChroot(filePath))
+		if err != nil {
+			logger.Debugf("Error on create file! %v", err)
+		}
 		defer file.Close()
 		return err
 	}
