@@ -59,8 +59,8 @@ Available configuration options:
 | `GITHUB_ORGANIZATION`     | `--github-organization`     | GitHub Organization Containing Team              |                          |
 | `GITHUB_ADMIN_TEAM_NAME`  | `--github-admin-team-name`  | Name of GitHub Team that grants admin SSH access |                          |
 | `GITHUB_USER_TEAM_NAME`   | `--github-user-team-name`   | Name of GitHub Team that grants user SSH access  |                          |
-| `GITHUB_ADMIN_TEAM_NAME`  | `--github-admin-team-id`    | ID of GitHub Team that grants admin SSH access   |                          |
-| `GITHUB_USER_TEAM`        | `--github-user-team-id`     | ID of Github Team that grants user SSH access    |                          |
+| `GITHUB_ADMIN_TEAM_ID`    | `--github-admin-team-id`    | ID of GitHub Team that grants admin SSH access   |                          |
+| `GITHUB_USER_TEAM_ID`     | `--github-user-team-id`     | ID of Github Team that grants user SSH access    |                          |
 | `SYNC_USERS_ADMIN_GROUPS` | `--sync-users-admin-groups` | Default groups for admins                        | `wheel`                  |
 | `SYNC_USERS_USERS_GROUPS` | `--sync-users-users-groups` | Default groups for users                         | `users`                  |
 | `SYNC_USERS_SHELL`        | `--sync-users-shell`        | Default Login Shell                              | `/bin/bash`              |
