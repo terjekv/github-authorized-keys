@@ -17,7 +17,7 @@ require (
 	github.com/jarcoal/httpmock v1.3.0
 	github.com/jasonlvhit/gocron v0.0.1
 	github.com/onsi/ginkgo v1.16.5
-	github.com/onsi/gomega v1.27.4
+	github.com/onsi/gomega v1.27.5
 	github.com/sirupsen/logrus v1.9.0
 	github.com/spf13/cobra v1.6.1
 	github.com/spf13/viper v1.15.0
