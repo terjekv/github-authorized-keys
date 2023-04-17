@@ -89,8 +89,8 @@ GITHUB_API_TOKEN={token}
 GITHUB_ORGANIZATION={organization}
 GITHUB_ADMIN_TEAM_NAME=ssh
 GITHUB_USER_TEAM_NAME=users
-SYNC_USERS_GID=500
-SYNC_USERS_GROUPS=sudo
+SYNC_USERS_ADMIN_GID=500
+SYNC_USERS_ADMIN_GROUPS=sudo
 SYNC_USERS_SHELL=/bin/bash
 SYNC_USERS_ROOT=/host
 SYNC_USERS_INTERVAL=300
@@ -114,6 +114,11 @@ docker run \
 **IMPORTANT** Remember to expose the REST API so you can retrieve user's public keys. Only public keys belonging to users found in the GitHub team will be returned.
 
 **Note:** depending on your OS distribution, you might need to tweak the command templates. Keep reading for details.
+
+## SELinux
+
+On platforms running SELinux, you will need to add a policy to allow SSH on port 301 (if using the default port).
+You can use the policy file `contrib/ssh_on_socket_301.pp` by adding it thusly: `semodule -i ssh_on_socket_301.pp`.
 
 ## Usage Examples
 
