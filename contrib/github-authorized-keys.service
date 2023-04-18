@@ -12,3 +12,6 @@ ExecStart=/usr/local/sbin/github-authorized-keys
 TimeoutStopSec=20s
 Restart=always
 RestartSec=10s
+
+[Install]
+WantedBy=multi-user.target

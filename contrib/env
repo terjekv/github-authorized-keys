@@ -1,5 +1,5 @@
 # Sample Environment File
-GITHUB_API_TOKEN={token}
+GITHUB_API_TOKEN=ghp_token
 GITHUB_ORGANIZATION={organization}
 GITHUB_ADMIN_TEAM_NAME=ssh
 GITHUB_USER_TEAM_NAME=users
