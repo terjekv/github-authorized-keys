@@ -16,7 +16,7 @@ Use GitHub teams to manage system user accounts and `authorized_keys`.
 ## Screenshots
 
 **Administrators** 
-* Automatically provision new users to production servers simply by adding them to a designatd GitHub team (e.g. `ssh`). 
+* Automatically provision new users to production servers simply by adding them to a designated GitHub team (e.g. `ssh`). 
   ![Demo](docs/github-team-demo.png)
 * No need to keep `authorized_keys` up to date because keys are pulled directly from github.com API and *optionally* cached in etcd
 * Immediately revoke SSH access to servers by evicting users from the GitHub team
@@ -39,7 +39,22 @@ This tool consists of three parts:
 
 ## Getting Started
 
-By far, the easiest way to get up and running is by using the ready-made docker container. The only dependency is [Docker](https://docs.docker.com/engine/installation) itself. If you wish to run [CoreOS](docs/coreos.md) or use `systemd`, there's a [sample unit file](contrib/github-authorized-keys.service).
+### Direct installation
+
+If you are running a derivative of RHEL (Fedora, CentOS, Rocky, etc) or modern Debian derivatives (Ubuntu etc)
+the install script should install and configure the service for you.
+
+```bash
+$ sudo /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/terjekv/github-authorized-keys/main/contrib/install.sh)"
+```
+
+On other distributions, you will need to validate the templates for adding users `LINUX_USER_ADD_TPL`, adding users with a
+GID available `LINUX_USER_ADD_WITH_GID_TPL` and adding users to groups `LINUX_USER_ADD_TO_GROUP_TPL` are correct for your
+distribution. 
+
+### Docker
+
+An easy way to get up and running is by using the ready-made docker container. The only dependency is [Docker](https://docs.docker.com/engine/installation) itself. If you wish to run [CoreOS](docs/coreos.md) or use `systemd`, there's a [sample unit file](contrib/github-authorized-keys-docker.service).
 
 A prebuilt public [docker image](https://hub.docker.com/r/terjekv/github-authorized-keys/) that is built using upon tagging a release (via [releases.yml](.github/workflows/releases.yml)) or you can build your own from source.
 
