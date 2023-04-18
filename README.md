@@ -16,7 +16,7 @@ Use GitHub teams to manage system user accounts and `authorized_keys`.
 ## Screenshots
 
 **Administrators** 
-* Automatically provision new users to production servers simply by adding them to a designatd GitHub team (e.g. `ssh`). 
+* Automatically provision new users to production servers simply by adding them to a designated GitHub team (e.g. `ssh`). 
   ![Demo](docs/github-team-demo.png)
 * No need to keep `authorized_keys` up to date because keys are pulled directly from github.com API and *optionally* cached in etcd
 * Immediately revoke SSH access to servers by evicting users from the GitHub team
@@ -39,7 +39,49 @@ This tool consists of three parts:
 
 ## Getting Started
 
-By far, the easiest way to get up and running is by using the ready-made docker container. The only dependency is [Docker](https://docs.docker.com/engine/installation) itself. If you wish to run [CoreOS](docs/coreos.md) or use `systemd`, there's a [sample unit file](contrib/github-authorized-keys.service).
+### Direct installation
+
+If you are running a derivative of RHEL (Fedora, CentOS, Rocky, etc), the contrib directory has a premade environment
+file that you can use. If you are running a different distribution, you will need to create your own environment file.
+
+The other artifacts should be distribution agnostic.
+
+```bash
+cd /tmp
+# Fetch artifacts
+curl -OL https://github.com/terjekv/github-authorized-keys/releases/download/v0.0.25/github-authorized-keys-v0.0.25-linux-amd64.tar.gz
+curl -OL https://raw.githubusercontent.com/terjekv/github-authorized-keys/main/contrib/authorized-keys
+curl -OL https://raw.githubusercontent.com/terjekv/github-authorized-keys/main/contrib/env.rhel
+curl -OL https://raw.githubusercontent.com/terjekv/github-authorized-keys/main/contrib/github-authorized-keys.service
+
+# SElinux
+curl -OL https://raw.githubusercontent.com/terjekv/github-authorized-keys/main/contrib/ssh_on_socket_301.pp
+sudo semodule -i ssh_on_socket_301.pp
+
+# Unpack binary
+tar xvzf github-authorized-keys-v0.0.25-linux-amd64.tar.gz
+
+# Move artifacts into place
+sudo mv github-authorized-keys-v0.0.25-linux-amd64 /usr/local/sbin/github-authorized-keys
+sudo mv authorized-keys /usr/local/sbin/authorized-keys
+sudo mv github-authorized-keys.service /etc/systemd/system/github-authorized-keys.service
+sudo mv env.rhel /etc/github-authorized-keys
+
+# Ensure permissions are correct
+sudo chmod 755 /usr/local/sbin/authorized-keys
+sudo chmod 755 /usr/local/sbin/github-authorized-keys
+
+# Edit configuration, add token, organization, and team
+sudo vi /etc/github-authorized-keys
+
+sudo systemctl daemon-reload
+sudo systemctl enable github-authorized-keys
+sudo systemctl start github-authorized-keys
+```
+
+### Docker
+
+An easy way to get up and running is by using the ready-made docker container. The only dependency is [Docker](https://docs.docker.com/engine/installation) itself. If you wish to run [CoreOS](docs/coreos.md) or use `systemd`, there's a [sample unit file](contrib/github-authorized-keys-docker.service).
 
 A prebuilt public [docker image](https://hub.docker.com/r/terjekv/github-authorized-keys/) that is built using upon tagging a release (via [releases.yml](.github/workflows/releases.yml)) or you can build your own from source.
 
