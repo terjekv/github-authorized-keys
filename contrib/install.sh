@@ -103,8 +103,8 @@ else
 fi
 
 if ! grep -Eq '^AuthorizedKeysCommandUser' /etc/ssh/sshd_config; then
-    echo "    - Adding AuthorizedKeysCommandUser to sshd_config"
-    echo "AuthorizedKeysCommandUser root" >> /etc/ssh/sshd_config.
+    echo "    - Adding AuthorizedKeysCommandUser to sshd_config."
+    echo "AuthorizedKeysCommandUser root" >> /etc/ssh/sshd_config
 else
     echo "    - AuthorizedKeysCommandUser already set up, skipping."
 fi
