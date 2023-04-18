@@ -3,7 +3,7 @@
 set -e
 
 GAK_VERSION=0.0.25
-BRANCH="${$1:-'main'}"
+BRANCH="${1:-main}"
 # terjekv/issue-35-Ease-of-installation
 
 [ -f /etc/os-release ] && source /etc/os-release
