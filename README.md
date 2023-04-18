@@ -41,7 +41,7 @@ This tool consists of three parts:
 
 ### Direct installation
 
-If you are running a derivative of RHEL (Fedora, CentOS, Rocky, etc) or modern Debian derivatives (Ubuntu etc)
+If you are running a derivative of RHEL9 (Fedora 36+, CentOS 9*, Rocky 9*, etc) or modern Debian derivatives (Ubuntu etc)
 the install script should install and configure the service for you.
 
 ```bash
@@ -50,6 +50,8 @@ $ sudo /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/terjekv/gith
 
 After the install is finished, you will be prompted to edit the configuration file `/root/.github-authorized-keys.yaml` and
 add your GitHub API token, organization name, and team name.
+
+For older versions of RHEL/CentOS, you will need to adapt the SELinux policies. Work is being done to make this easier.
 
 Note: On other distributions, you will also need to validate the templates for adding users `LINUX_USER_ADD_TPL`, adding users with a
 GID available `LINUX_USER_ADD_WITH_GID_TPL` and adding users to groups `LINUX_USER_ADD_TO_GROUP_TPL` are correct for your
