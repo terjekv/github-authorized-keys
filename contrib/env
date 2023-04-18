@@ -2,9 +2,11 @@
 GITHUB_API_TOKEN="ghp_token"
 GITHUB_ORGANIZATION="{organization}"
 GITHUB_ADMIN_TEAM_NAME="ssh"
-GITHUB_USER_TEAM_NAME="users"
-SYNC_USERS_GID=500
-SYNC_USERS_GROUPS="sudo"
+SYNC_USERS_ADMIN_GID="500"
+SYNC_USERS_ADMIN_GROUPS="sudo"
 SYNC_USERS_SHELL="/bin/bash"
 SYNC_USERS_INTERVAL=300
 LISTEN="localhost:301"
+LINUX_USER_ADD_TPL="adduser --shell /bin/bash --disabled-password {username}"
+LINUX_USER_ADD_WITH_GID_TPL="adduser --gid {gid} --shell /bin/bash --disabled-password {username}"
+LINUX_USER_ADD_TO_GROUP_TPL="usermod -a -G {group} {username}"

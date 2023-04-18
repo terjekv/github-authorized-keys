@@ -13,7 +13,7 @@ up and running.
 
 ## Environment files
 
-Two examples, [`env.rhel`](env.rhel) and [`env`](env) (generic, mostly debian-like). These can be used to set up
+Two examples, [`env.rhel`](env.rhel) and [`env`](env) (debian-like). These can be used to set up
 the environment for `github-authorized-keys`. If you are planning to use a YAML configuration
 file, you can convert the environment variables to YAML as follows:
 

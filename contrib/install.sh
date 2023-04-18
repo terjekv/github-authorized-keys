@@ -49,7 +49,7 @@ if [ "${ID_LIKE}" == "fedora" ]; then
 
     ENV_FILE=env.rhel
 else
-    echo "  - No specific system recognized, assuming systemd but no SELinux."
+    echo "  - No specific setup available, assuming debian-like with systemd but no SELinux."
 
     $CURL -OL "${RAW_CONTRIB_URL}/env"
     ENV_FILE=env
@@ -93,6 +93,11 @@ if [ "${ID_LIKE}" == "fedora" ]; then
     /sbin/restorecon -v ${BINARY_PATH}/authorized-keys > /dev/null
 fi
 
+echo "  - Ensuring default group exists."
+if ! grep -Fq ':999:' /etc/group; then
+    groupadd -g 999 ssh_keys
+fi
+
 echo "  - Validating ssh configuration."
 
 if ! grep -Eq '^AuthorizedKeysCommand' /etc/ssh/sshd_config; then
@@ -108,6 +113,10 @@ if ! grep -Eq '^AuthorizedKeysCommandUser' /etc/ssh/sshd_config; then
 else
     echo "    - AuthorizedKeysCommandUser already set up, skipping."
 fi
+
+# https://github.com/widdix/aws-ec2-ssh/issues/157
+echo "  - Ensuring that ec2-instance-connect is not installed."
+[ -f /usr/bin/apt-get ] && apt-get -qq remove ec2-instance-connect
 
 echo
 echo "** Installation complete! **"

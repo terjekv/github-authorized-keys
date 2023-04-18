@@ -41,43 +41,16 @@ This tool consists of three parts:
 
 ### Direct installation
 
-If you are running a derivative of RHEL (Fedora, CentOS, Rocky, etc), the contrib directory has a premade environment
-file that you can use. If you are running a different distribution, you will need to create your own environment file.
-
-The other artifacts should be distribution agnostic.
+If you are running a derivative of RHEL (Fedora, CentOS, Rocky, etc) or modern Debian derivatives (Ubuntu etc)
+the install script should install and configure the service for you.
 
 ```bash
-cd /tmp
-# Fetch artifacts
-curl -OL https://github.com/terjekv/github-authorized-keys/releases/download/v0.0.25/github-authorized-keys-v0.0.25-linux-amd64.tar.gz
-curl -OL https://raw.githubusercontent.com/terjekv/github-authorized-keys/main/contrib/authorized-keys
-curl -OL https://raw.githubusercontent.com/terjekv/github-authorized-keys/main/contrib/env.rhel
-curl -OL https://raw.githubusercontent.com/terjekv/github-authorized-keys/main/contrib/github-authorized-keys.service
-
-# SElinux
-curl -OL https://raw.githubusercontent.com/terjekv/github-authorized-keys/main/contrib/ssh_on_socket_301.pp
-sudo semodule -i ssh_on_socket_301.pp
-
-# Unpack binary
-tar xvzf github-authorized-keys-v0.0.25-linux-amd64.tar.gz
-
-# Move artifacts into place
-sudo mv github-authorized-keys-v0.0.25-linux-amd64 /usr/local/sbin/github-authorized-keys
-sudo mv authorized-keys /usr/local/sbin/authorized-keys
-sudo mv github-authorized-keys.service /etc/systemd/system/github-authorized-keys.service
-sudo mv env.rhel /etc/github-authorized-keys
-
-# Ensure permissions are correct
-sudo chmod 755 /usr/local/sbin/authorized-keys
-sudo chmod 755 /usr/local/sbin/github-authorized-keys
-
-# Edit configuration, add token, organization, and team
-sudo vi /etc/github-authorized-keys
-
-sudo systemctl daemon-reload
-sudo systemctl enable github-authorized-keys
-sudo systemctl start github-authorized-keys
+$ sudo /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/terjekv/github-authorized-keys/main/contrib/install.sh)"
 ```
+
+On other distributions, you will need to validate the templates for adding users `LINUX_USER_ADD_TPL`, adding users with a
+GID available `LINUX_USER_ADD_WITH_GID_TPL` and adding users to groups `LINUX_USER_ADD_TO_GROUP_TPL` are correct for your
+distribution. 
 
 ### Docker
 
