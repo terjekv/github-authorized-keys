@@ -38,4 +38,5 @@ There are two policy files available:
   This policy allows github-authorized-keys to be executed by systemd while located in /usr/local/sbin.
 
 For default installations on SELinux systems, the first is required. You can avoid the latter if you
-install github-authorized-keys to /usr/sbin instead of /usr/local/sbin.
+install github-authorized-keys to /usr/sbin instead of /usr/local/sbin. However, this will require 
+a number of manual steps to get the service file set up correctly.
