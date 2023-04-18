@@ -9,6 +9,7 @@ GAK_VERSION=0.0.25
 cd /tmp
 CURL="curl -sSfOL"
 BINARY_PATH="/usr/local/sbin"
+CONF_FILE="/etc/github-authorized-keys.yaml"
 
 # https://raw.githubusercontent.com/terjekv/github-authorized-keys/main/contrib/
 RAW_CONTRIB_URL=https://raw.githubusercontent.com/terjekv/github-authorized-keys/terjekv/issue-35-Ease-of-installation/contrib
@@ -27,7 +28,9 @@ if [ "${ID_LIKE}" == "fedora" ]; then
 
     # SElinux
     $CURL "${RAW_CONTRIB_URL}/ssh_on_socket_301.pp"
+    $CURL "${RAW_CONTRIB_URL}/allow-github-authorized-keys-from-usr-local.pp"
     sudo semodule -i ssh_on_socket_301.pp
+    sudo semodule -i allow-github-authorized-keys-from-usr-local.pp
 
     ENV_FILE=env.rhel
 else
@@ -50,14 +53,19 @@ echo "  - Installing systemd service."
 sudo mv github-authorized-keys.service /etc/systemd/system/github-authorized-keys.service
 
 
-if ! grep 'GITHUB_API_TOKEN=ghp_token' /etc/github-authorized-keys > /dev/null; then
+if [ -f ${CONF_FILE} ] && ! grep 'GITHUB_API_TOKEN: ghp_token' ${CONF_FILE} > /dev/null; then
     echo
     echo "Warning: Skipping installation of default environment file, as it is already modified."
-    echo "If you want to use the default environment file, please remove /etc/github-authorized-keys and run this script again."
+    echo "If you want to use the default environment file, please remove ${CONF_FILE} and run this script again."
     echo 
+    ENV_ALREADY_SET=True
 else
     echo "  - Installing environment file."
-    sudo mv ${ENV_FILE} /etc/github-authorized-keys
+    # YAMLIFY the environment file
+    echo "---" > ${ENV_FILE}.yaml
+    awk '{sub(/=/,": ");}1' < ${ENV_FILE} >> ${ENV_FILE}.yaml
+    sudo mv ${ENV_FILE}.yaml ${CONF_FILE}
+    rm ${ENV_FILE}
 fi
 
 # Ensure permissions are correct
@@ -66,20 +74,26 @@ sudo chmod 755 ${BINARY_PATH}/github-authorized-keys
 
 sudo systemctl daemon-reload
 
+echo
 echo "** Installation complete! **"
 echo
-echo "You need to configure the service before it can be used!"
-if [ "${ID_LIKE}" == "fedora" ]; then
-    echo "Edit /etc/github-authorized-keys to add your token, organization, and team".
-    
+
+if ! [ "${ENV_ALREADY_SET}" == "True" ]; then
+    echo "You need to configure the service before it can be used!"
+    if [ "${ID_LIKE}" == "fedora" ]; then
+        echo "Edit ${CONF_FILE} to add your token, organization, and team".    
+    else
+        echo "Edit ${CONF_FILE} to configured your setup."
+        echo "Ensure that token, organization, and team is set up, and that".
+        echo "the templates for creating users and groups are correct for your system."
+    fi
+    echo "After that run the following commands to enable and start the service".
+
+    echo sudo systemctl enable github-authorized-keys
+    echo sudo systemctl start github-authorized-keys
 else
-    echo "Edit /etc/github-authorized-keys to configured your setup."
-    echo "Ensure that token, organization, and team is set up, and that".
-    echo "the templates for creating users and groups are correct for your system."
+    echo "Configuration is already set up, enabling and starting the service."
+#    sudo systemctl enable github-authorized-keys
+#    sudo systemctl start github-authorized-keys
 fi
 
-echo
-echo "After that, run the following commands to enable and start the service".
-
-echo sudo systemctl enable github-authorized-keys
-echo sudo systemctl start github-authorized-keys
