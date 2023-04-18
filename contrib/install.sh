@@ -9,7 +9,10 @@ GAK_VERSION=0.0.25
 cd /tmp
 CURL="curl -sSfOL"
 BINARY_PATH="/usr/local/sbin"
-CONF_FILE="/etc/github-authorized-keys.yaml"
+# Loading a given configuration file from --config doesn't work, so we use the hardcoded default
+# path for the configuration file...
+CONF_FILE="/root/.github-authorized-keys.yaml" 
+SELINUX_POLICIES="curl-ssh-github-access.pp allow-github-authorized-keys-from-usr-local.pp"
 
 # https://raw.githubusercontent.com/terjekv/github-authorized-keys/main/contrib/
 RAW_CONTRIB_URL=https://raw.githubusercontent.com/terjekv/github-authorized-keys/terjekv/issue-35-Ease-of-installation/contrib
@@ -24,9 +27,16 @@ $CURL "${RAW_CONTRIB_URL}/github-authorized-keys.service"
 if [ "${ID_LIKE}" == "fedora" ]; then
     echo "** Detected Fedora-like system, with systemd and SELinux."
 
+    echo "  - Configuring SELinux policies"
     $CURL "${RAW_CONTRIB_URL}/env.rhel"
 
     # SElinux
+    for policy in $SELINUX_POLICIES; do
+        $CURL "${RAW_CONTRIB_URL}/${policy}"
+        sudo semodule -i ${policy}
+        rm ${policy}
+    done
+    
     $CURL "${RAW_CONTRIB_URL}/ssh_on_socket_301.pp"
     $CURL "${RAW_CONTRIB_URL}/allow-github-authorized-keys-from-usr-local.pp"
     sudo semodule -i ssh_on_socket_301.pp
@@ -73,6 +83,12 @@ sudo chmod 755 ${BINARY_PATH}/authorized-keys
 sudo chmod 755 ${BINARY_PATH}/github-authorized-keys
 
 sudo systemctl daemon-reload
+
+if [ "${ID_LIKE}" == "fedora" ]; then
+    echo "  - Ensuring SELinux permissions are correct"
+    # Ensure SELinux permissions are correct
+    sudo /sbin/restorecon -v ${BINARY_PATH}/github-authorized-keys
+fi
 
 echo
 echo "** Installation complete! **"
