@@ -3,6 +3,8 @@
 set -e
 
 GAK_VERSION=0.0.25
+BRANCH="${$1:-'main'}"
+# terjekv/issue-35-Ease-of-installation
 
 [ -f /etc/os-release ] && source /etc/os-release
 
@@ -12,10 +14,10 @@ BINARY_PATH="/usr/local/sbin"
 # Loading a given configuration file from --config doesn't work, so we use the hardcoded default
 # path for the configuration file...
 CONF_FILE="/root/.github-authorized-keys.yaml" 
-SELINUX_POLICIES="curl-ssh-github-access.pp allow-github-authorized-keys-from-usr-local.pp"
+SELINUX_POLICIES="my-curl.pp allow-github-authorized-keys-from-usr-local.pp"
 
 # https://raw.githubusercontent.com/terjekv/github-authorized-keys/main/contrib/
-RAW_CONTRIB_URL=https://raw.githubusercontent.com/terjekv/github-authorized-keys/terjekv/issue-35-Ease-of-installation/contrib
+RAW_CONTRIB_URL=https://raw.githubusercontent.com/terjekv/github-authorized-keys/${BRANCH}/contrib
 
 # Fetch shared artifacts
 $CURL "https://github.com/terjekv/github-authorized-keys/releases/download/v${GAK_VERSION}/github-authorized-keys-v${GAK_VERSION}-linux-amd64.tar.gz"
@@ -36,7 +38,7 @@ if [ "${ID_LIKE}" == "fedora" ]; then
         sudo semodule -i ${policy}
         rm ${policy}
     done
-    
+
     $CURL "${RAW_CONTRIB_URL}/ssh_on_socket_301.pp"
     $CURL "${RAW_CONTRIB_URL}/allow-github-authorized-keys-from-usr-local.pp"
     sudo semodule -i ssh_on_socket_301.pp
