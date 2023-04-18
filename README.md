@@ -48,9 +48,13 @@ the install script should install and configure the service for you.
 $ sudo /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/terjekv/github-authorized-keys/main/contrib/install.sh)"
 ```
 
-On other distributions, you will need to validate the templates for adding users `LINUX_USER_ADD_TPL`, adding users with a
+After the install is finished, you will be prompted to edit the configuration file `/root/.github-authorized-keys.yaml` and
+add your GitHub API token, organization name, and team name.
+
+Note: On other distributions, you will also need to validate the templates for adding users `LINUX_USER_ADD_TPL`, adding users with a
 GID available `LINUX_USER_ADD_WITH_GID_TPL` and adding users to groups `LINUX_USER_ADD_TO_GROUP_TPL` are correct for your
 distribution. 
+
 
 ### Docker
 
