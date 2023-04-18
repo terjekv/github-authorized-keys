@@ -7,7 +7,7 @@ After=network.service
 [Service]
 User=root
 TimeoutStartSec=0
-Environment=/etc/github-authorized-keys
+Environment=GIN_MODE=release
 ExecStart=/usr/local/sbin/github-authorized-keys
 TimeoutStopSec=20s
 Restart=always

@@ -2,9 +2,13 @@
 
 set -e
 
+if [ "$(id -u)" -ne 0 ]; then
+        echo 'This script must be run by root' >&2
+        exit 1
+fi
+
 GAK_VERSION=0.0.25
 BRANCH="${1:-main}"
-# terjekv/issue-35-Ease-of-installation
 
 [ -f /etc/os-release ] && source /etc/os-release
 
@@ -26,27 +30,26 @@ $CURL "${RAW_CONTRIB_URL}/authorized-keys"
 # Fetch systemd service file
 $CURL "${RAW_CONTRIB_URL}/github-authorized-keys.service"
 
-if [ "${ID_LIKE}" == "fedora" ]; then
-    echo "** Detected Fedora-like system, with systemd and SELinux."
+echo
+echo "Installing github-authorized-keys v${GAK_VERSION}..."
+echo
+echo "  - Detected OS: ${PRETTY_NAME}"
 
-    echo "  - Configuring SELinux policies"
+if [ "${ID_LIKE}" == "fedora" ]; then
+    echo "  - System is Fedora-like, expecting systemd and SELinux."
+    echo "  - Configuring SELinux policies."
     $CURL "${RAW_CONTRIB_URL}/env.rhel"
 
     # SElinux
     for policy in $SELINUX_POLICIES; do
         $CURL "${RAW_CONTRIB_URL}/${policy}"
-        sudo semodule -i ${policy}
+        semodule -i ${policy}
         rm ${policy}
     done
 
-    $CURL "${RAW_CONTRIB_URL}/ssh_on_socket_301.pp"
-    $CURL "${RAW_CONTRIB_URL}/allow-github-authorized-keys-from-usr-local.pp"
-    sudo semodule -i ssh_on_socket_301.pp
-    sudo semodule -i allow-github-authorized-keys-from-usr-local.pp
-
     ENV_FILE=env.rhel
 else
-    echo "** Detected generic system, with systemd and no SELinux."
+    echo "  - No specific system recognized, assuming systemd but no SELinux."
 
     $CURL -OL "${RAW_CONTRIB_URL}/env"
     ENV_FILE=env
@@ -54,42 +57,56 @@ fi
 
 # Unpack binary
 tar xzf github-authorized-keys-v${GAK_VERSION}-linux-amd64.tar.gz
+rm github-authorized-keys-v${GAK_VERSION}-linux-amd64.tar.gz README.md LICENSE
 
-echo "  - Installing binary files into ${BINARY_PATH}"
+echo "  - Installing binary files into ${BINARY_PATH}."
 # Move artifacts into place
-sudo mv github-authorized-keys ${BINARY_PATH}/github-authorized-keys
+mv github-authorized-keys ${BINARY_PATH}/github-authorized-keys
 
-sudo mv authorized-keys ${BINARY_PATH}/authorized-keys
+mv authorized-keys ${BINARY_PATH}/authorized-keys
 
 echo "  - Installing systemd service."
-sudo mv github-authorized-keys.service /etc/systemd/system/github-authorized-keys.service
+mv github-authorized-keys.service /etc/systemd/system/github-authorized-keys.service
 
 
-if [ -f ${CONF_FILE} ] && ! grep 'GITHUB_API_TOKEN: ghp_token' ${CONF_FILE} > /dev/null; then
-    echo
-    echo "Warning: Skipping installation of default environment file, as it is already modified."
-    echo "If you want to use the default environment file, please remove ${CONF_FILE} and run this script again."
-    echo 
+if test -f ${CONF_FILE} && ! grep -Fq 'ghp_token' ${CONF_FILE}; then
+    echo "  - NOTE: ${CONF_FILE} already has configuration, staying clear."
     ENV_ALREADY_SET=True
 else
-    echo "  - Installing environment file."
+    echo "  - Installing a fresh configuration into ${CONF_FILE}."
     # YAMLIFY the environment file
     echo "---" > ${ENV_FILE}.yaml
     awk '{sub(/=/,": ");}1' < ${ENV_FILE} >> ${ENV_FILE}.yaml
-    sudo mv ${ENV_FILE}.yaml ${CONF_FILE}
+    mv ${ENV_FILE}.yaml ${CONF_FILE}
     rm ${ENV_FILE}
 fi
 
 # Ensure permissions are correct
-sudo chmod 755 ${BINARY_PATH}/authorized-keys
-sudo chmod 755 ${BINARY_PATH}/github-authorized-keys
+chmod 755 ${BINARY_PATH}/authorized-keys
+chmod 755 ${BINARY_PATH}/github-authorized-keys
 
-sudo systemctl daemon-reload
+systemctl daemon-reload
 
 if [ "${ID_LIKE}" == "fedora" ]; then
-    echo "  - Ensuring SELinux permissions are correct"
-    # Ensure SELinux permissions are correct
-    sudo /sbin/restorecon -v ${BINARY_PATH}/github-authorized-keys
+    echo "  - Ensuring SELinux permissions are correct."
+    /sbin/restorecon -v ${BINARY_PATH}/github-authorized-keys > /dev/null
+    /sbin/restorecon -v ${BINARY_PATH}/authorized-keys > /dev/null
+fi
+
+echo "  - Validating ssh configuration."
+
+if ! grep -Fq AuthorizedKeysCommand /etc/ssh/sshd_config; then
+    echo "    - Adding AuthorizedKeysCommand to sshd_config."
+    echo "AuthorizedKeysCommand ${BINARY_PATH}/authorized-keys" >> /etc/ssh/sshd_config 
+else
+    echo "    - AuthorizedKeysCommand already set up, skipping."
+fi
+
+if ! grep -Fq AuthorizedKeysCommandUser /etc/ssh/sshd_config; then
+    echo "    - Adding AuthorizedKeysCommandUser to sshd_config"
+    echo "AuthorizedKeysCommandUser root" >> /etc/ssh/sshd_config.
+else
+    echo "    - AuthorizedKeysCommandUser already set up, skipping."
 fi
 
 echo
@@ -107,11 +124,18 @@ if ! [ "${ENV_ALREADY_SET}" == "True" ]; then
     fi
     echo "After that run the following commands to enable and start the service".
 
-    echo sudo systemctl enable github-authorized-keys
-    echo sudo systemctl start github-authorized-keys
+    echo systemctl enable github-authorized-keys
+    echo systemctl enable github-authorized-keys
+    echo systemctl restart sshd
 else
-    echo "Configuration is already set up, enabling and starting the service."
-#    sudo systemctl enable github-authorized-keys
-#    sudo systemctl start github-authorized-keys
+    echo "Configuration is already set up, enabling and starting the service, restarting sshd."
+
+    systemctl enable github-authorized-keys
+    if systemctl --type=service --state=active | grep -Fq "github-authorized-keys.service"; then
+        systemctl restart github-authorized-keys
+    else
+        systemctl start github-authorized-keys
+    fi
+    systemctl restart sshd
 fi
 
