@@ -95,14 +95,14 @@ fi
 
 echo "  - Validating ssh configuration."
 
-if ! grep -Fq AuthorizedKeysCommand /etc/ssh/sshd_config; then
+if ! grep -Eq '^AuthorizedKeysCommand' /etc/ssh/sshd_config; then
     echo "    - Adding AuthorizedKeysCommand to sshd_config."
     echo "AuthorizedKeysCommand ${BINARY_PATH}/authorized-keys" >> /etc/ssh/sshd_config 
 else
     echo "    - AuthorizedKeysCommand already set up, skipping."
 fi
 
-if ! grep -Fq AuthorizedKeysCommandUser /etc/ssh/sshd_config; then
+if ! grep -Eq '^AuthorizedKeysCommandUser' /etc/ssh/sshd_config; then
     echo "    - Adding AuthorizedKeysCommandUser to sshd_config"
     echo "AuthorizedKeysCommandUser root" >> /etc/ssh/sshd_config.
 else
@@ -125,7 +125,7 @@ if ! [ "${ENV_ALREADY_SET}" == "True" ]; then
     echo "After that run the following commands to enable and start the service".
 
     echo systemctl enable github-authorized-keys
-    echo systemctl enable github-authorized-keys
+    echo systemctl start github-authorized-keys
     echo systemctl restart sshd
 else
     echo "Configuration is already set up, enabling and starting the service, restarting sshd."
