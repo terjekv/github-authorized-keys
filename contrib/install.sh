@@ -35,7 +35,8 @@ echo "Installing github-authorized-keys v${GAK_VERSION}..."
 echo
 echo "  - Detected OS: ${PRETTY_NAME}"
 
-if [ "${ID_LIKE}" == "fedora" ]; then
+shopt -s nocasematch
+if [[ "${ID_LIKE}" =~ "fedora" ]]; then
     echo "  - System is Fedora-like, expecting systemd and SELinux."
     echo "  - Configuring SELinux policies."
     $CURL "${RAW_CONTRIB_URL}/env.rhel"
