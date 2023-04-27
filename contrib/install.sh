@@ -8,7 +8,18 @@ if [ "$(id -u)" -ne 0 ]; then
 fi
 
 GAK_VERSION=0.0.25
+UNAME_ARCH=$(uname -m)
 BRANCH="${1:-main}"
+
+
+if [ "${UNAME_ARCH}" == "x86_64" ]; then
+    ARCH="amd64"
+elif [ "${UNAME_ARCH}" == "aarch64" ]; then
+    ARCH="arm64"
+else
+    echo "Unsupported architecture: ${UNAME_ARCH}"
+    exit 1
+fi
 
 [ -f /etc/os-release ] && source /etc/os-release
 
@@ -18,13 +29,13 @@ BINARY_PATH="/usr/local/sbin"
 # Loading a given configuration file from --config doesn't work, so we use the hardcoded default
 # path for the configuration file...
 CONF_FILE="/root/.github-authorized-keys.yaml" 
-SELINUX_POLICIES="my-curl.pp allow-github-authorized-keys-from-usr-local.pp"
+SELINUX_POLICIES="github-authorized-keys-allow-sshd-reserved-ports.pp"
 
 # https://raw.githubusercontent.com/terjekv/github-authorized-keys/main/contrib/
 RAW_CONTRIB_URL=https://raw.githubusercontent.com/terjekv/github-authorized-keys/${BRANCH}/contrib
 
 # Fetch shared artifacts
-$CURL "https://github.com/terjekv/github-authorized-keys/releases/download/v${GAK_VERSION}/github-authorized-keys-v${GAK_VERSION}-linux-amd64.tar.gz"
+$CURL "https://github.com/terjekv/github-authorized-keys/releases/download/v${GAK_VERSION}/github-authorized-keys-v${GAK_VERSION}-linux-${ARCH}.tar.gz"
 $CURL "${RAW_CONTRIB_URL}/authorized-keys"
 
 # Fetch systemd service file
@@ -39,7 +50,6 @@ shopt -s nocasematch
 if [[ "${ID_LIKE}" =~ "fedora" ]]; then
     echo "  - System is Fedora-like, expecting systemd and SELinux."
     echo "  - Configuring SELinux policies."
-    $CURL "${RAW_CONTRIB_URL}/env.rhel"
 
     # SElinux
     for policy in $SELINUX_POLICIES; do
@@ -48,6 +58,7 @@ if [[ "${ID_LIKE}" =~ "fedora" ]]; then
         rm ${policy}
     done
 
+    $CURL "${RAW_CONTRIB_URL}/env.rhel"
     ENV_FILE=env.rhel
 else
     echo "  - No specific setup available, assuming debian-like with systemd but no SELinux."
@@ -57,14 +68,12 @@ else
 fi
 
 # Unpack binary
-tar xzf github-authorized-keys-v${GAK_VERSION}-linux-amd64.tar.gz
-rm github-authorized-keys-v${GAK_VERSION}-linux-amd64.tar.gz README.md LICENSE
+tar xzf github-authorized-keys-v${GAK_VERSION}-linux-${ARCH}.tar.gz
+rm github-authorized-keys-v${GAK_VERSION}-linux-${ARCH}.tar.gz README.md LICENSE
 
 echo "  - Installing binary files into ${BINARY_PATH}."
 # Move artifacts into place
-mv github-authorized-keys ${BINARY_PATH}/github-authorized-keys
-
-mv authorized-keys ${BINARY_PATH}/authorized-keys
+mv authorized-keys github-authorized-keys ${BINARY_PATH}/
 
 echo "  - Installing systemd service."
 mv github-authorized-keys.service /etc/systemd/system/github-authorized-keys.service
@@ -90,8 +99,9 @@ systemctl daemon-reload
 
 if [ "${ID_LIKE}" == "fedora" ]; then
     echo "  - Ensuring SELinux permissions are correct."
-    /sbin/restorecon -v ${BINARY_PATH}/github-authorized-keys > /dev/null
-    /sbin/restorecon -v ${BINARY_PATH}/authorized-keys > /dev/null
+    semanage fcontext -a system_u:object_r:bin_t:s0 ${BINARY_PATH}/authorized-keys ${BINARY_PATH}/github-authorized-keys
+    restorecon -v ${BINARY_PATH}/authorized-keys ${BINARY_PATH}/github-authorized-keys
+#    chcon system_u:object_r:bin_t:s0 ${BINARY_PATH}/authorized-keys ${BINARY_PATH}/github-authorized-keys
 fi
 
 echo "  - Ensuring default group exists."

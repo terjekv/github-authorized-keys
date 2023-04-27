@@ -1,0 +1,13 @@
+
+module github-authorized-keys-allow-sshd-reserved-ports 1.0;
+
+require {
+	type sshd_t;
+	type reserved_port_t;
+	class tcp_socket name_connect;
+}
+
+#============= sshd_t ==============
+
+#!!!! This avc can be allowed using the boolean 'nis_enabled'
+allow sshd_t reserved_port_t:tcp_socket name_connect;
