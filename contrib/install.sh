@@ -49,10 +49,11 @@ echo "  - Detected OS: ${PRETTY_NAME}"
 shopt -s nocasematch
 if [[ "${ID_LIKE}" =~ "fedora" ]]; then
     echo "  - System is Fedora-like, expecting systemd and SELinux."
-    echo "  - Configuring SELinux policies."
+    echo "  - Installing SELinux policies."
 
     # SElinux
     for policy in $SELINUX_POLICIES; do
+        echo "    - Installing ${policy}"
         $CURL "${RAW_CONTRIB_URL}/${policy}"
         semodule -i ${policy}
         rm ${policy}
@@ -97,10 +98,24 @@ chmod 755 ${BINARY_PATH}/github-authorized-keys
 
 systemctl daemon-reload
 
-if [ "${ID_LIKE}" == "fedora" ]; then
+if [[ "${ID_LIKE}" =~ "fedora" ]]; then
     echo "  - Ensuring SELinux permissions are correct."
-    semanage fcontext -a system_u:object_r:bin_t:s0 ${BINARY_PATH}/authorized-keys ${BINARY_PATH}/github-authorized-keys
-    restorecon -v ${BINARY_PATH}/authorized-keys ${BINARY_PATH}/github-authorized-keys
+
+    # A note on the code below.
+    # We use grep > /dev/null rather than grep -q to prevent
+    # BrokenPipeError: [Errno 32] Broken pipe
+    # as a result of the pipe being closed by grep on the first hit.
+    for binary in authorized-keys github-authorized-keys; do
+        echo "    - ${BINARY_PATH}/${binary}"
+        # If a policy exists for the binary, ensure we have the latest version by
+        # first removing it...
+        /usr/sbin/semanage fcontext -l | grep ${BINARY_PATH}/${binary} > /dev/null && \
+            /usr/sbin/semanage fcontext -d ${BINARY_PATH}/${binary}
+        # ...then adding the correct one...
+        /usr/sbin/semanage fcontext -a -t bin_t ${BINARY_PATH}/${binary}
+        # ...and finally relabeling the binary.
+        /usr/sbin/restorecon ${BINARY_PATH}/${binary}
+    done
 #    chcon system_u:object_r:bin_t:s0 ${BINARY_PATH}/authorized-keys ${BINARY_PATH}/github-authorized-keys
 fi
 
