@@ -115,6 +115,11 @@ fix_selinux_contexts() {
     if [[ "${ID_LIKE}" =~ "fedora" ]]; then
         display "Ensuring SELinux contexts are correct."
 
+        if ! [ -f /usr/sbin/semanage ]; then
+            display "semanage missing, installing policycoreutils-python-utils." 2
+            dnf install --quiet --assumeyes policycoreutils-python-utils > /dev/null
+        fi
+
         # A note on the code below.
         # We use grep > /dev/null rather than grep -q to prevent
         # BrokenPipeError: [Errno 32] Broken pipe
