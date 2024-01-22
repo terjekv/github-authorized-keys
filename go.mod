@@ -23,7 +23,7 @@ require (
 	github.com/spf13/viper v1.18.2
 	github.com/valyala/fasttemplate v1.2.2
 	golang.org/x/net v0.20.0
-	golang.org/x/oauth2 v0.15.0
+	golang.org/x/oauth2 v0.16.0
 )
 
 require (
